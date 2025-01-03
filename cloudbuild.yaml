@@ -1,0 +1,47 @@
+steps:
+  # Build the container image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/nestjs-server:$COMMIT_SHA', '.']
+
+  # Run TypeORM migration:run in the built container
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      [
+        'run',
+        '--rm',
+        'gcr.io/$PROJECT_ID/nestjs-server:$COMMIT_SHA',
+        'sh',
+        '-c',
+        'npm run migration:run',
+      ]
+
+  # Push the container image to Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/nestjs-server:$COMMIT_SHA']
+  # Deploy container image to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'nestjs-server'
+      - '--image'
+      - 'gcr.io/$PROJECT_ID/nestjs-server:$COMMIT_SHA'
+      - '--region'
+      - 'asia-northeast3'
+
+  # # Run TypeORM migration:revert in the built container
+  # - name: 'gcr.io/cloud-builders/docker'
+  #   args:
+  #     [
+  #       'run',
+  #       '--rm',
+  #       'gcr.io/$PROJECT_ID/nestjs-server:$COMMIT_SHA',
+  #       'sh',
+  #       '-c',
+  #       'npm run migration:revert',
+  #     ]
+images:
+  - 'gcr.io/$PROJECT_ID/nestjs-server:$COMMIT_SHA'
+options:
+  logging: CLOUD_LOGGING_ONLY
