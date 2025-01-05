@@ -1,4 +1,4 @@
-import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from "@nestjs/common";
+import { CanActivate, ExecutionContext, HttpException, HttpStatus, Injectable, UnauthorizedException } from "@nestjs/common";
 import { env } from "process";
 import { Observable } from "rxjs";
 import { FirebaseAdmin } from "../firebase.service";
@@ -25,7 +25,15 @@ export class FirebaseAuthGuard implements CanActivate {
                 case 'auth/id-token-revoked':
                     throw new UnauthorizedException('Firebase ID 토큰이 취소되었습니다.')
                 default:
-                    throw new Error(e);
+                    throw new HttpException({
+                        status: HttpStatus.BAD_REQUEST,
+                        errorType: 'firebase-auth',
+                        code: e.code,
+                        error: e.message,
+                        referenceUrl: 'https://firebase.google.com/docs/auth/admin/errors?hl=ko&_gl=1*7sq4th*_up*MQ..*_ga*Mzk1MTgyODQwLjE3MzU5MTQyNTM.*_ga_CW55HF8NVT*MTczNTkxNDI1Mi4xLjAuMTczNTkxNDI1Mi4wLjAuMA..'
+                    }, HttpStatus.BAD_REQUEST, {
+                        cause: e
+                    });
             }
 
         }
