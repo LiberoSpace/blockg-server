@@ -4,7 +4,7 @@ import {
   EventSubscriber,
   InsertEvent,
 } from 'typeorm';
-import { Post } from './entity/post.entity';
+import { Post } from './entities/post.entity';
 
 @EventSubscriber()
 export class PostSubscriber implements EntitySubscriberInterface<Post> {

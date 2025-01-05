@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Post } from './entity/post.entity';
+import { Post } from './entities/post.entity';
 
 @Injectable()
 export class PostsService {
   constructor(
     @InjectRepository(Post)
     private postsRepository: Repository<Post>,
-  ) {}
+  ) { }
 
   async findAll(): Promise<Post[]> {
     return await this.postsRepository.find();
@@ -18,9 +18,9 @@ export class PostsService {
     return await this.postsRepository.findOneBy({ id });
   }
 
-  async save({ content }: { content: string }): Promise<Post> {
-    return await this.postsRepository.save({ content });
-  }
+  // async save({ content }: { content: string }): Promise<Post> {
+  //   // return await this.postsRepository.sㅌㅈave({ content });
+  // }
 
   async remove(id: number): Promise<void> {
     await this.postsRepository.delete(id);
