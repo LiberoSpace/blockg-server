@@ -1,12 +1,19 @@
-import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
+import { Controller, Get, UseGuards } from '@nestjs/common';
+import { FirebaseAuthGuard } from './guards/auth.guard';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor() { }
 
   @Get()
   getHello(): string {
-    return this.appService.getHello();
+    return 'Hello Blockg Server';
+  }
+
+  @UseGuards(FirebaseAuthGuard)
+  @Get('id-token-test')
+  idTokenTest(): string {
+    console.log('123');
+    return 'Success';
   }
 }

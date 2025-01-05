@@ -60,8 +60,8 @@ $ npm run test:cov
 
 ## Make it mine
 
-Open Vscode search tab(Left Side), And Search "nestjs-server"
-Replace "nestjs-server" with "your project name" excluding the package-lock.json file.
+Open Vscode search tab(Left Side), And Search "blockg-server"
+Replace "blockg-server" with "your project name" excluding the package-lock.json file.
 
 ## Deployment
 

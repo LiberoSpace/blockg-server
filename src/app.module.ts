@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { PostsHttpModule } from './module/posts/posts-http.module';
+import { env } from 'process';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { FirebaseAdmin } from './firebase.service';
+import { PostsHttpModule } from './module/posts/posts-http.module';
 import { StartupService } from './startup.service';
 
 @Module({
@@ -10,15 +11,14 @@ import { StartupService } from './startup.service';
     PostsHttpModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: '35.222.127.255',
-      port: 5432,
+      host: env.DB_HOST,
+      port: Number(env.DB_PORT),
       username: 'postgres',
-      password: 'Vault1024!',
-      database: 'test',
-      autoLoadEntities: true,
+      password: env.DB_PASSWORD,
+      database: 'blockg',
     }),
   ],
   controllers: [AppController],
-  providers: [AppService, StartupService],
+  providers: [StartupService, FirebaseAdmin],
 })
-export class AppModule {}
+export class AppModule { }
