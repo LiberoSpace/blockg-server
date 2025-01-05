@@ -13,7 +13,6 @@ export class AppController {
   @UseGuards(FirebaseAuthGuard)
   @Get('id-token-test')
   idTokenTest(): string {
-    console.log('123');
     return 'Success';
   }
 }

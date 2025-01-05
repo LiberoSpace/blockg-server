@@ -17,14 +17,14 @@ async function bootstrap() {
   );
 
   const config = new DocumentBuilder()
-    .setTitle('Post example')
-    .setDescription('The post API description')
+    .setTitle('Blockg')
+    .setContact('ChanYoung Park', '', 'parklim2254@gmail.com')
+    .setDescription('The Blockg API description')
     .setVersion('1.0')
-    .addTag('posts')
     .build();
 
   const documentFactory = () => SwaggerModule.createDocument(app, config, {});
-  SwaggerModule.setup('docs/posts', app, documentFactory);
+  SwaggerModule.setup('docs', app, documentFactory);
 
   await app.listen(process.env.PORT ?? 8080);
 }
