@@ -33,7 +33,9 @@ export class Block {
           throw new BadRequestException('url이 없습니다.');
         }
         block.url = dto.url;
-        block.isThumbnail = dto.isThumbnail;
+        if (dto.isThumbnail) {
+          block.isThumbnail = true;
+        }
         break;
       case BlockType.PLACE:
         if (!dto.placeId) {
