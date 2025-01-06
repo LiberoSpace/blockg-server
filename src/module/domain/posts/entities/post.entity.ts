@@ -5,19 +5,23 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
   CreateDateColumn,
+  OneToMany,
+  ManyToOne,
 } from 'typeorm';
+import { User } from '../../users/entities/user.entity';
 
 @Entity()
 export class Post {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ nullable: true })
   title: string;
 
-  @Column()
-  thumbnailImage: string;
+  @Column({ nullable: true })
+  thumbnailUrl: string;
 
+  @Column({ default: 0 })
   blockCount: number;
 
   @Column({ default: 0 })
@@ -27,20 +31,32 @@ export class Post {
   @Column({ default: 0 })
   views: number;
 
-  @Column()
+  @Column({ nullable: true })
   totalExpense: number;
 
-  @Exclude()
   @Column({ default: false })
   published: boolean;
+
+  @Exclude()
+  @Column({ default: true })
+  temporary: boolean;
 
   @CreateDateColumn({
     type: 'timestamp with time zone',
   })
-  createdAt?: Date;
+  createdAt: Date;
 
   @UpdateDateColumn({
     type: 'timestamp with time zone',
   })
-  updatedAt?: Date;
+  updatedAt: Date;
+
+  @Column('json', { nullable: true })
+  content: JSON;
+
+  @ManyToOne(() => User, (user) => user.posts, { onDelete: 'CASCADE' })
+  user: User;
+
+  @Column()
+  userId: number;
 }

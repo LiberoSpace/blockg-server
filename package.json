@@ -7,6 +7,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build --webpack",
+    "bs": "npm run build && npm run start:prod",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "GOOGLE_APPLICATION_CREDENTIALS=/Users/pcy/Documents/keys/blockg-firebase-adminsdk-i0vzg-1e32e66bcf.json nest start --watch",
@@ -18,7 +19,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "migration:generate": "npx ts-node ./node_modules/typeorm/cli.js migration:generate -d ./data-source-config.ts src/migrations/startMigrations",
+    "migration:generate": "npx ts-node ./node_modules/typeorm/cli.js migration:generate -d ./data-source-config.ts src/migrations/addUserAndPost",
     "migration:create": "npx ts-node ./node_modules/typeorm/cli.js migration:create ./src/migrations/updateScoreboardSportTypeEnum",
     "migration:run": "npx ts-node ./node_modules/typeorm/cli.js migration:run -d ./data-source-config.ts",
     "migration:revert": "npx ts-node ./node_modules/typeorm/cli.js migration:revert -d ./data-source-config.ts"

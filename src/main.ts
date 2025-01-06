@@ -19,8 +19,12 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('Blockg')
     .setContact('ChanYoung Park', '', 'parklim2254@gmail.com')
-    .setDescription('The Blockg API description')
+    .setDescription('Blockg API 문서입니다.')
     .setVersion('1.0')
+    .addBearerAuth(
+      { scheme: 'bearer', bearerFormat: 'JWT', type: 'http' },
+      'JWT',
+    )
     .build();
 
   const documentFactory = () => SwaggerModule.createDocument(app, config, {});
