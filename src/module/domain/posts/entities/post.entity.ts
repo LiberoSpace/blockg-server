@@ -7,13 +7,19 @@ import {
   CreateDateColumn,
   OneToMany,
   ManyToOne,
+  Index,
 } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
+import { PostStatus } from '../enums/post-status.enum';
 
+// @Index('reference_id_index', ['referenceId'])
 @Entity()
 export class Post {
   @PrimaryGeneratedColumn()
   id: number;
+
+  // @Column({ type: 'uuid', default: () => 'uuid_generate_v4()' })
+  // referenceId: string; // 기본적으로 UUID 생성
 
   @Column({ nullable: true })
   title: string;
@@ -34,17 +40,19 @@ export class Post {
   @Column({ nullable: true })
   totalExpense: number;
 
-  @Column({ default: false })
-  published: boolean;
-
-  @Exclude()
-  @Column({ default: true })
-  temporary: boolean;
+  @Column('enum', { enum: PostStatus, default: PostStatus.TEMPORARY })
+  status: PostStatus;
 
   @CreateDateColumn({
     type: 'timestamp with time zone',
   })
   createdAt: Date;
+
+  @Column({
+    nullable: true,
+    type: 'timestamp with time zone',
+  })
+  publishedAt: Date;
 
   @UpdateDateColumn({
     type: 'timestamp with time zone',
@@ -52,7 +60,7 @@ export class Post {
   updatedAt: Date;
 
   @Column('json', { nullable: true })
-  content: JSON;
+  content: Object[];
 
   @ManyToOne(() => User, (user) => user.posts, { onDelete: 'CASCADE' })
   user: User;

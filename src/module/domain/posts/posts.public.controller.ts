@@ -1,7 +1,6 @@
-import { Body, Controller, Get, Param, Patch } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
-import { UpdatePostDto } from './dtos/update-post.dto';
-import { Post as PostEntity } from './entities/post.entity';
+import { Body, Controller, Param, Patch } from '@nestjs/common';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { UpdatePostMetadataDto } from './dtos/update-post-metadata.dto';
 import { PostsService } from './posts.service';
 
 @ApiTags('글 - public')
@@ -22,11 +21,18 @@ export class PostPublicController {
   //   return await this.postsService.findOne(id);
   // }
 
+  @ApiOperation({
+    summary: '글 메타데이터 업데이트',
+    description: '조회수 등의 업데이트를 위해 사용됨',
+  })
   @Patch('/:postId')
-  async updatePost(
+  async updatePostMetadata(
     @Param('postId') postId: number,
-    @Body() dto: UpdatePostDto,
+    @Body() dto: UpdatePostMetadataDto,
   ) {
-    const updateResult = await this.postsService.updatePost(postId, dto);
+    const updateResult = await this.postsService.updatePostMetadata(
+      postId,
+      dto,
+    );
   }
 }

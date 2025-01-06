@@ -1,12 +1,42 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsEnum, IsNumber } from 'class-validator';
-import { UpdatePostEvent } from '../enums/update-post-event.enum';
+import { Type } from 'class-transformer';
+import {
+  IsArray,
+  IsEnum,
+  IsNumber,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
+import { PostStatus } from '../enums/post-status.enum';
+import { BlockDto } from './blocks-dto';
 
 export class UpdatePostDto {
   @ApiProperty({
-    description: '글 정보 업데이트를 진행할 이벤트',
-    enum: UpdatePostEvent,
+    description: '제목',
   })
-  @IsEnum(UpdatePostEvent)
-  event: UpdatePostEvent;
+  @IsString()
+  title: string;
+
+  @ApiPropertyOptional({
+    description: '발행 여부',
+    enum: PostStatus,
+  })
+  @IsEnum(PostStatus)
+  status: PostStatus;
+
+  @ApiProperty({
+    description: '글에 작성된 여행의 총 비용, 기준은 대한민국 원화',
+  })
+  @IsNumber()
+  totalExpense: number;
+
+  @ApiProperty({
+    description: '블록 배열',
+    type: () => BlockDto,
+    isArray: true,
+  })
+  @Type(() => BlockDto)
+  @ValidateNested()
+  @IsArray()
+  blocks: BlockDto[];
 }

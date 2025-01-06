@@ -8,5 +8,5 @@ export enum BlockType {
   EXPENSE = 'expense',
   SCHEDULE = 'schedule',
   DATE = 'date',
-  PRIVATE = 'secret',
+  SECRET = 'secret',
 }

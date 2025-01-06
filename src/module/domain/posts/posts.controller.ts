@@ -1,16 +1,19 @@
 import {
+  BadRequestException,
+  Body,
   Controller,
-  Get,
   Param,
+  Patch,
   Post,
-  Put,
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { Post as PostEntity } from './entities/post.entity';
-import { PostsService } from './posts.service';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { FirebaseAuthGuard } from '../../../guards/firebase-auth.guard';
+import { PostsService } from './posts.service';
+import { UpdatePostDto } from './dtos/update-post.dto';
+import { User } from '../users/entities/user.entity';
+import { PostStatus } from './enums/post-status.enum';
 
 @ApiBearerAuth('JWT')
 @UseGuards(FirebaseAuthGuard)
@@ -33,12 +36,29 @@ export class PostsController {
   // }
 
   // @UseInterceptors(ClassSerializerInterceptor)
+  @ApiOperation({
+    summary: '글 생성하기.',
+    description: 'postId 이용을 위해 사용됨',
+  })
   @Post('/')
   async createPost(@Request() req: any): Promise<Number> {
     const user = req.user;
     return await this.postsService.createPost(user.id);
   }
 
-  // @Put('/:postId')
-  // async overwritePost() {}
+  @Patch('/:postId')
+  async updatePost(
+    @Request() req: any,
+    @Param('postId') postId: number,
+    @Body() dto: UpdatePostDto,
+  ) {
+    const user: User = req.user;
+
+    if (dto.status === PostStatus.TEMPORARY) {
+      throw new BadRequestException(
+        '임시 상태로는 글을 업데이트할 수 없습니다.',
+      );
+    }
+    await this.postsService.updatePost(postId, user.id, dto);
+  }
 }
