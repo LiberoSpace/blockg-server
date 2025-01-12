@@ -1,16 +1,15 @@
 import { Exclude } from 'class-transformer';
 import {
-  Entity,
   Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-  CreateDateColumn,
-  OneToMany,
-  ManyToOne,
-  Index,
 } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { PostStatus } from '../enums/post-status.enum';
+import { Block } from './block.entity';
 
 // @Index('reference_id_index', ['referenceId'])
 @Entity()
@@ -24,8 +23,8 @@ export class Post {
   @Column({ nullable: true })
   title: string;
 
-  @Column({ nullable: true })
-  thumbnailUrl: string;
+  @Column('character varying', { nullable: true })
+  thumbnailUrl: string | null;
 
   @Column({ default: 0 })
   blockCount: number;
@@ -37,8 +36,8 @@ export class Post {
   @Column({ default: 0 })
   views: number;
 
-  @Column({ nullable: true })
-  totalExpense: number;
+  @Column('integer', { nullable: true })
+  totalExpense: number | null;
 
   @Column('enum', { enum: PostStatus, default: PostStatus.TEMPORARY })
   status: PostStatus;
@@ -60,7 +59,7 @@ export class Post {
   updatedAt: Date;
 
   @Column('json', { nullable: true })
-  content: Object[];
+  content: Block[];
 
   @ManyToOne(() => User, (user) => user.posts, { onDelete: 'CASCADE' })
   user: User;

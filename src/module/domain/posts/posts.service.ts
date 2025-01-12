@@ -1,20 +1,19 @@
 import {
-  BadRequestException,
   ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DeepPartial, Repository } from 'typeorm';
 import { User } from '../users/entities/user.entity';
 import { UpdatePostMetadataDto } from './dtos/update-post-metadata.dto';
-import { Post } from './entities/post.entity';
-import { UpdatePostEvent } from './enums/update-post-event.enum';
 import { UpdatePostDto } from './dtos/update-post.dto';
-import { PostStatus } from './enums/post-status.enum';
-import { BlockType } from './enums/block-type.enum';
-import { BlockDto } from './dtos/blocks-dto';
 import { Block } from './entities/block.entity';
+import { Post } from './entities/post.entity';
+import { PostStatus } from './enums/post-status.enum';
+import { UpdatePostEvent } from './enums/update-post-event.enum';
+import { BlockType } from './enums/block-type.enum';
+import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 @Injectable()
 export class PostsService {
@@ -61,18 +60,30 @@ export class PostsService {
       }
     });
 
-    // 블럭 개수 계산, 썸네일 지정
-    let postUpdateInterface = this.postsRepository.create({
-      blockCount: dto.blocks.length,
-      ...dto,
+    // ## 글 업데이트 인터페이스에 정보 추가
+    const postUpdateInterface: QueryDeepPartialEntity<Post> = {
+      blockCount: blocks.length, // 블럭 개수 계산
       content: blocks,
-    });
-    const thumbnailBlock = dto.blocks.find((blockDto) => blockDto.isThumbnail);
-    postUpdateInterface = Object.assign(postUpdateInterface, {
-      thumbnailUrl: thumbnailBlock?.url ?? null,
-    });
+      ...dto,
+    };
+    // 썸네일 지정
+    const thumbnailBlock = blocks.find((block) => block.isThumbnail);
+    postUpdateInterface.thumbnailUrl = thumbnailBlock?.url ?? null;
+    // 총 비용 계산
+    const expenseBlocks = blocks.filter(
+      (block) => block.type === BlockType.EXPENSE,
+    );
+    if (expenseBlocks.length !== 0) {
+      let totalExpense = 0;
+      expenseBlocks.forEach((block) => {
+        totalExpense += block.expense!;
+      });
+      postUpdateInterface.totalExpense = totalExpense;
+    } else {
+      postUpdateInterface.totalExpense = null;
+    }
 
-    // 첫 발행
+    // 첫 발행시각 추가
     if (
       post.status !== PostStatus.PUBLISHED &&
       dto.status === PostStatus.PUBLISHED
