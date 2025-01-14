@@ -2,13 +2,19 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
   Param,
   Patch,
   Post,
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 import { FirebaseAuthGuard } from '../../../guards/firebase-auth.guard';
 import { PostsService } from './posts.service';
 import { UpdatePostDto } from './dtos/update-post.dto';
@@ -40,12 +46,20 @@ export class PostsController {
     summary: '글 생성하기.',
     description: 'postId 이용을 위해 사용됨',
   })
+  @ApiOkResponse({
+    description: '생성된 글 번호',
+    type: Number,
+  })
   @Post('/')
   async createPost(@Request() req: any): Promise<number> {
     const user = req.user;
     return await this.postsService.createPost(user.id);
   }
 
+  @ApiOperation({
+    summary: '글 정보 업데이트하기',
+    description: '글 전반의 내용을 업데이트합니다.',
+  })
   @Patch('/:postId')
   async updatePost(
     @Request() req: any,
@@ -60,5 +74,15 @@ export class PostsController {
       );
     }
     await this.postsService.updatePost(postId, user.id, dto);
+  }
+
+  @ApiOperation({
+    summary: '글 삭제하기',
+  })
+  @Delete('/:postId')
+  async deletePost(@Request() req: any, @Param('postId') postId: number) {
+    const user: User = req.user;
+
+    await this.postsService.deletePost(postId, user.id);
   }
 }

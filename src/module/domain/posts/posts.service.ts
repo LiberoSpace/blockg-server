@@ -128,7 +128,12 @@ export class PostsService {
     }
   }
 
-  async deletePost(id: number): Promise<void> {
+  async deletePost(id: number, userId: number): Promise<void> {
+    const post = await this.postsRepository.findOneBy({ id: id });
+    if (!post) throw new NotFoundException('삭제하려는 글이 없습니다.');
+    if (post.userId != userId)
+      throw new ForbiddenException('글에 대한 소유권이 없습니다.');
+
     await this.postsRepository.delete(id);
   }
 }
