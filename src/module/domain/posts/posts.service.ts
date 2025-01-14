@@ -59,12 +59,12 @@ export class PostsService {
         throw e;
       }
     });
-
     // ## 글 업데이트 인터페이스에 정보 추가
     const postUpdateInterface: QueryDeepPartialEntity<Post> = {
+      title: dto.title,
+      status: dto.status,
       blockCount: blocks.length, // 블럭 개수 계산
       content: blocks,
-      ...dto,
     };
     // 썸네일 지정
     const thumbnailBlock = blocks.find((block) => block.isThumbnail);
@@ -91,6 +91,7 @@ export class PostsService {
       postUpdateInterface.publishedAt = new Date();
     }
 
+    console.log(postUpdateInterface);
     await this.postsRepository.update({ id: postId }, postUpdateInterface);
   }
 

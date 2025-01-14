@@ -17,6 +17,13 @@ export class BlockDto {
   type: BlockType;
 
   @ApiPropertyOptional({
+    description: '블록의 보조 타입. 원하는 값으로 사용',
+  })
+  @IsString()
+  @IsOptional()
+  subType?: string;
+
+  @ApiPropertyOptional({
     description: '내용. 사용: [text, header*, secret]',
   })
   @IsString()

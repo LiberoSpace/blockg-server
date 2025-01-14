@@ -25,12 +25,12 @@ export class UpdatePostDto {
   @IsEnum(PostStatus)
   status: PostStatus;
 
-  @ApiPropertyOptional({
-    description: '글에 작성된 여행의 총 비용, 기준은 대한민국 원화',
-  })
-  @IsNumber()
-  @IsOptional()
-  totalExpense: number;
+  // @ApiPropertyOptional({
+  //   description: '글에 작성된 여행의 총 비용, 기준은 대한민국 원화',
+  // })
+  // @IsNumber()
+  // @IsOptional()
+  // totalExpense: number;
 
   @ApiProperty({
     description: '블록 배열',

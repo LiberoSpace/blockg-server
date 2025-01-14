@@ -4,6 +4,7 @@ import { BlockType } from '../enums/block-type.enum';
 
 export class Block {
   type: BlockType;
+  subType?: string;
   content?: string;
   placeId?: string;
   mainText?: string;
@@ -18,15 +19,22 @@ export class Block {
     const block = new Block();
     block.type = dto.type;
     switch (dto.type) {
-      case BlockType.TEXT ||
-        BlockType.HEADER_1 ||
-        BlockType.HEADER_2 ||
-        BlockType.HEADER_1 ||
-        BlockType.SECRET:
+      case BlockType.TEXT || BlockType.SECRET:
         if (dto.content === undefined || dto.content === null) {
           throw new BadRequestException('content가 없습니다.');
         }
         block.content = dto.content;
+        break;
+      case BlockType.HEADER:
+        if (dto.content === undefined || dto.content === null) {
+          throw new BadRequestException('content가 없습니다.');
+        }
+        block.content = dto.content;
+
+        if (dto.subType === undefined || dto.subType === null) {
+          throw new BadRequestException('헤더 종류가 없습니다.');
+        }
+        block.subType = dto.subType;
         break;
       case BlockType.IMAGE:
         if (!dto.url) {
