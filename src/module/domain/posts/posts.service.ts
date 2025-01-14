@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -14,6 +15,7 @@ import { PostStatus } from './enums/post-status.enum';
 import { UpdatePostEvent } from './enums/update-post-event.enum';
 import { BlockType } from './enums/block-type.enum';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
+import { ExchangeRateService } from '../exchange-rate/exchange-rate.service';
 
 @Injectable()
 export class PostsService {
@@ -22,6 +24,8 @@ export class PostsService {
     private postsRepository: Repository<Post>,
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+
+    private exchangeRateService: ExchangeRateService,
   ) {}
 
   // async findAll(): Promise<Post[]> {
@@ -75,8 +79,21 @@ export class PostsService {
     );
     if (expenseBlocks.length !== 0) {
       let totalExpense = 0;
+      const exchangeRate =
+        await this.exchangeRateService.getLatestExchangeRate();
       expenseBlocks.forEach((block) => {
-        totalExpense += block.expense!;
+        const conversionRateFromUSD =
+          exchangeRate.conversionRate[block.currencyCode!];
+        if (!conversionRateFromUSD) {
+          throw new BadRequestException(
+            '비용 블럭 화폐 코드를 지원하지 않거나 잘못되었습니다.',
+          );
+        }
+        const rate =
+          Number(exchangeRate.conversionRate['KRW']) /
+          Number(conversionRateFromUSD);
+
+        totalExpense += Math.round((block.expense! * rate)!);
       });
       postUpdateInterface.totalExpense = totalExpense;
     } else {

@@ -9,9 +9,13 @@ import { UsersHttpModule } from './module/domain/users/users-http.module';
 import { FirebaseAdminModule } from './module/firebase/firebase-admin.module';
 import { StartupService } from './startup.service';
 import { AuthModule } from './module/domain/users/auth.module';
+import { ExchangeRateHttpModule } from './module/domain/exchange-rate/exchange-rate-http.module';
+import { ConfigModule } from '@nestjs/config';
+import { ExchangeRate } from './module/domain/exchange-rate/exchange-rate.entity';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     FirebaseAdminModule,
     AuthModule,
     TypeOrmModule.forRoot({
@@ -21,11 +25,12 @@ import { AuthModule } from './module/domain/users/auth.module';
       username: 'postgres',
       password: env.DB_PASSWORD,
       database: 'blockg',
-      entities: [User, Post],
+      entities: [User, Post, ExchangeRate],
       synchronize: false,
     }),
     UsersHttpModule,
     PostsHttpModule,
+    ExchangeRateHttpModule,
   ],
   controllers: [AppController],
   providers: [StartupService],
