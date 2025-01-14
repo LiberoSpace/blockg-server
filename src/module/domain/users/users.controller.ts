@@ -47,7 +47,7 @@ export class UsersController {
   async createUser(
     @Request() req: any,
     @Body() dto: CreateUserDto,
-  ): Promise<Number> {
+  ): Promise<number> {
     const user = req.user;
     return await this.UsersService.createUser(user.uid, dto);
   }

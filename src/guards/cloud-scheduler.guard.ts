@@ -1,5 +1,5 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
-import { GcpService } from 'src/module/gcp/gcp.service';
+import { GcpService } from '../module/gcp/gcp.service';
 
 @Injectable()
 export class CloudSchedulerGuard implements CanActivate {

@@ -2,7 +2,6 @@ import {
   BadRequestException,
   ConflictException,
   Injectable,
-  NotAcceptableException,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -59,7 +58,7 @@ export class UsersService {
     }
   }
 
-  async createUser(uid: string, dto: CreateUserDto): Promise<Number> {
+  async createUser(uid: string, dto: CreateUserDto): Promise<number> {
     const existUser = await this.userRepository.findOneBy({
       uid: uid,
     });

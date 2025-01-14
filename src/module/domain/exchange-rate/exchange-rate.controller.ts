@@ -1,6 +1,6 @@
 import { Controller, Post, UseGuards } from '@nestjs/common';
 import { ExchangeRateService } from './exchange-rate.service';
-import { CloudSchedulerGuard } from 'src/guards/cloud-scheduler.guard';
+import { CloudSchedulerGuard } from '../../../guards/cloud-scheduler.guard';
 
 @Controller('blockg/api/v1/exchange-rate')
 export class ExchangeRateController {

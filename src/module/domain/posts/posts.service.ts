@@ -5,17 +5,17 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeepPartial, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
+import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
+import { ExchangeRateService } from '../exchange-rate/exchange-rate.service';
 import { User } from '../users/entities/user.entity';
 import { UpdatePostMetadataDto } from './dtos/update-post-metadata.dto';
 import { UpdatePostDto } from './dtos/update-post.dto';
 import { Block } from './entities/block.entity';
 import { Post } from './entities/post.entity';
+import { BlockType } from './enums/block-type.enum';
 import { PostStatus } from './enums/post-status.enum';
 import { UpdatePostEvent } from './enums/update-post-event.enum';
-import { BlockType } from './enums/block-type.enum';
-import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
-import { ExchangeRateService } from '../exchange-rate/exchange-rate.service';
 
 @Injectable()
 export class PostsService {
@@ -32,11 +32,15 @@ export class PostsService {
   //   return await this.postsRepository.find();
   // }
 
-  // async findOne(id: number): Promise<Post | null> {
-  //   return await this.postsRepository.findOneBy({ id });
-  // }
+  // TODO: 개인 생각 블록 처리
+  async findOne(postId: number): Promise<Post | null> {
+    return await this.postsRepository.findOne({
+      where: { id: postId },
+      relations: { user: true },
+    });
+  }
 
-  async createPost(userId: number): Promise<Number> {
+  async createPost(userId: number): Promise<number> {
     const insertResult = await this.postsRepository.insert({
       userId,
     });
@@ -44,7 +48,7 @@ export class PostsService {
   }
 
   async updatePost(postId: number, userId: number, dto: UpdatePostDto) {
-    let post = await this.postsRepository.findOneBy({
+    const post = await this.postsRepository.findOneBy({
       id: postId,
     });
     if (!post) {

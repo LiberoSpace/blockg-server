@@ -41,7 +41,7 @@ export class PostsController {
     description: 'postId 이용을 위해 사용됨',
   })
   @Post('/')
-  async createPost(@Request() req: any): Promise<Number> {
+  async createPost(@Request() req: any): Promise<number> {
     const user = req.user;
     return await this.postsService.createPost(user.id);
   }

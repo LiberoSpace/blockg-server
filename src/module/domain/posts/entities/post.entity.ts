@@ -53,6 +53,7 @@ export class Post {
   })
   publishedAt: Date;
 
+  // 조회수 증가에서도 업데이트 됨.
   @UpdateDateColumn({
     type: 'timestamp with time zone',
   })

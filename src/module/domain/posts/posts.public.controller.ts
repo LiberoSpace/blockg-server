@@ -1,7 +1,15 @@
-import { Body, Controller, Param, Patch } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  Patch,
+} from '@nestjs/common';
+import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UpdatePostMetadataDto } from './dtos/update-post-metadata.dto';
 import { PostsService } from './posts.service';
+import { GetPostRdto } from './rdtos/get-post.rdto';
 
 @ApiTags('글 - public')
 @Controller('blockg/public-api/v1/posts')
@@ -13,13 +21,23 @@ export class PostPublicController {
   //   return await this.postsService.findAll();
   // }
 
-  // @Get('/:id')
-  // async getPost(
-  //   @Param('id')
-  //   id: number,
-  // ): Promise<PostEntity | null> {
-  //   return await this.postsService.findOne(id);
-  // }
+  @ApiOperation({
+    summary: '글 상세 조회',
+  })
+  @ApiOkResponse({
+    type: GetPostRdto,
+  })
+  @Get('/:postId')
+  async getPost(
+    @Param('postId')
+    postId: number,
+  ): Promise<GetPostRdto> {
+    const post = await this.postsService.findOne(postId);
+    if (!post) {
+      throw new NotFoundException('글이 없습니다.');
+    }
+    return GetPostRdto.fromEntity(post);
+  }
 
   @ApiOperation({
     summary: '글 메타데이터 업데이트',
@@ -30,9 +48,6 @@ export class PostPublicController {
     @Param('postId') postId: number,
     @Body() dto: UpdatePostMetadataDto,
   ) {
-    const updateResult = await this.postsService.updatePostMetadata(
-      postId,
-      dto,
-    );
+    await this.postsService.updatePostMetadata(postId, dto);
   }
 }

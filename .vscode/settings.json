@@ -8,6 +8,7 @@
     "dtos",
     "gcloud",
     "nestjs",
+    "Rdto",
     "typeorm"
   ],
   "[javascript]": {
