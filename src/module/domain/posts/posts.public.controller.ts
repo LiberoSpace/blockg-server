@@ -16,23 +16,18 @@ import { GetPostRdto } from './rdtos/get-post.rdto';
 export class PostPublicController {
   constructor(private readonly postsService: PostsService) {}
 
-  // @Get('')
-  // async getPosts(): Promise<PostEntity[]> {
-  //   return await this.postsService.findAll();
-  // }
-
   @ApiOperation({
     summary: '글 상세 조회',
   })
   @ApiOkResponse({
     type: GetPostRdto,
   })
-  @Get('/:postId')
+  @Get('/:referenceId')
   async getPost(
-    @Param('postId')
-    postId: number,
+    @Param('referenceId')
+    referenceId: string,
   ): Promise<GetPostRdto> {
-    const post = await this.postsService.findOne(postId);
+    const post = await this.postsService.findOne(referenceId);
     if (!post) {
       throw new NotFoundException('글이 없습니다.');
     }
@@ -43,11 +38,11 @@ export class PostPublicController {
     summary: '글 메타데이터 업데이트',
     description: '조회수 등의 업데이트를 위해 사용됨',
   })
-  @Patch('/:postId')
+  @Patch('/:referenceId')
   async updatePostMetadata(
-    @Param('postId') postId: number,
+    @Param('referenceId') referenceId: string,
     @Body() dto: UpdatePostMetadataDto,
   ) {
-    await this.postsService.updatePostMetadata(postId, dto);
+    await this.postsService.updatePostMetadata(referenceId, dto);
   }
 }

@@ -2,6 +2,7 @@ import {
   BadRequestException,
   ForbiddenException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -33,18 +34,25 @@ export class PostsService {
   // }
 
   // TODO: 개인 생각 블록 처리
-  async findOne(postId: number): Promise<Post | null> {
+  async findOne(referenceId: string): Promise<Post | null> {
     return await this.postsRepository.findOne({
-      where: { id: postId },
+      where: { referenceId: referenceId },
       relations: { user: true },
     });
   }
 
-  async createPost(userId: number): Promise<number> {
+  async createPost(userId: number): Promise<Post> {
     const insertResult = await this.postsRepository.insert({
       userId,
     });
-    return Number(insertResult.identifiers[0].id);
+    let insertedPost = await this.postsRepository.findOneBy({
+      id: Number(insertResult.identifiers[0].id),
+    });
+    if (!insertedPost) {
+      throw new InternalServerErrorException();
+    }
+
+    return insertedPost;
   }
 
   async updatePost(postId: number, userId: number, dto: UpdatePostDto) {
@@ -116,24 +124,34 @@ export class PostsService {
     await this.postsRepository.update({ id: postId }, postUpdateInterface);
   }
 
-  async updatePostMetadata(postId: number, dto: UpdatePostMetadataDto) {
+  async updatePostMetadata(referenceId: string, dto: UpdatePostMetadataDto) {
     switch (dto.event) {
       case UpdatePostEvent.VIEW:
-        await this.postsRepository.increment({ id: postId }, 'views', 1);
+        await this.postsRepository.increment(
+          { referenceId: referenceId },
+          'views',
+          1,
+        );
         break;
       case UpdatePostEvent.SHARE:
-        await this.postsRepository.increment({ id: postId }, 'shareCount', 1);
+        await this.postsRepository.increment(
+          { referenceId: referenceId },
+          'shareCount',
+          1,
+        );
         break;
       default:
     }
   }
 
-  async deletePost(id: number, userId: number): Promise<void> {
-    const post = await this.postsRepository.findOneBy({ id: id });
+  async deletePost(postId: number, userId: number): Promise<void> {
+    const post = await this.postsRepository.findOneBy({
+      id: postId,
+    });
     if (!post) throw new NotFoundException('삭제하려는 글이 없습니다.');
     if (post.userId != userId)
       throw new ForbiddenException('글에 대한 소유권이 없습니다.');
 
-    await this.postsRepository.delete(id);
+    await this.postsRepository.delete({ id: postId });
   }
 }

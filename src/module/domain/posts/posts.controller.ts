@@ -28,32 +28,25 @@ import { PostStatus } from './enums/post-status.enum';
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
-  // @Get('')
-  // async getPosts(): Promise<PostEntity[]> {
-  //   return await this.postsService.findAll();
-  // }
-
-  // @Get('/:id')
-  // async getPost(
-  //   @Param('id')
-  //   id: number,
-  // ): Promise<PostEntity | null> {
-  //   return await this.postsService.findOne(id);
-  // }
-
-  // @UseInterceptors(ClassSerializerInterceptor)
   @ApiOperation({
     summary: '글 생성하기.',
     description: 'postId 이용을 위해 사용됨',
   })
   @ApiOkResponse({
-    description: '생성된 글 번호',
-    type: Number,
+    description: 'id, referenceId로 구성된 객체',
+    type: Object,
   })
   @Post('/')
-  async createPost(@Request() req: any): Promise<number> {
+  async createPost(@Request() req: any): Promise<{
+    id: number;
+    referenceId: string;
+  }> {
     const user = req.user;
-    return await this.postsService.createPost(user.id);
+    const post = await this.postsService.createPost(user.id);
+    return {
+      id: post.id,
+      referenceId: post.referenceId,
+    };
   }
 
   @ApiOperation({

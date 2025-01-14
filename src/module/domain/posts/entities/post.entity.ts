@@ -3,6 +3,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -11,14 +12,14 @@ import { User } from '../../users/entities/user.entity';
 import { PostStatus } from '../enums/post-status.enum';
 import { Block } from './block.entity';
 
-// @Index('reference_id_index', ['referenceId'])
+@Index('reference_id_index', ['referenceId'])
 @Entity()
 export class Post {
   @PrimaryGeneratedColumn()
   id: number;
 
-  // @Column({ type: 'uuid', default: () => 'uuid_generate_v4()' })
-  // referenceId: string; // 기본적으로 UUID 생성
+  @Column({ type: 'uuid', default: () => 'uuid_generate_v4()' })
+  referenceId: string; // 기본적으로 UUID 생성
 
   @Column({ nullable: true })
   title: string;
