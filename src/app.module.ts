@@ -12,6 +12,7 @@ import { AuthModule } from './module/domain/users/auth.module';
 import { ExchangeRateHttpModule } from './module/domain/exchange-rate/exchange-rate-http.module';
 import { ConfigModule } from '@nestjs/config';
 import { ExchangeRate } from './module/domain/exchange-rate/exchange-rate.entity';
+import { AuthHttpModule } from './module/domain/users/auth-http.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { ExchangeRate } from './module/domain/exchange-rate/exchange-rate.entity
     UsersHttpModule,
     PostsHttpModule,
     ExchangeRateHttpModule,
+    AuthHttpModule,
   ],
   controllers: [AppController],
   providers: [StartupService],

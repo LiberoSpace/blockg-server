@@ -8,6 +8,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { User } from './entities/user.entity';
+import { uniqueHandleGenerator } from './unique-handle-generator';
+import { NickNameGenerator } from './nick-name-generator';
 
 @Injectable()
 export class UsersService {
@@ -59,17 +61,26 @@ export class UsersService {
   }
 
   async createUser(uid: string, dto: CreateUserDto): Promise<number> {
-    const existUser = await this.userRepository.findOneBy({
+    let existUser = await this.userRepository.findOneBy({
       uid: uid,
     });
     if (existUser) {
       throw new ConflictException('uid에 해당하는 유저가 이미 존재합니다.');
     }
 
+    let handle: string;
+    do {
+      handle = uniqueHandleGenerator();
+      existUser = await this.userRepository.findOneBy({ handle: handle });
+    } while (existUser);
+
     const insertResult = await this.userRepository.insert(
       this.userRepository.create({
         uid: uid,
-        ...dto,
+        profileImageUrl: dto.profileImageUrl,
+        email: dto.email,
+        nickName: dto.nickName ?? NickNameGenerator(),
+        handle: handle,
       }),
     );
     return Number(insertResult.identifiers[0].id);

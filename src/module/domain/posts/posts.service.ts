@@ -45,7 +45,7 @@ export class PostsService {
     const insertResult = await this.postsRepository.insert({
       userId,
     });
-    let insertedPost = await this.postsRepository.findOneBy({
+    const insertedPost = await this.postsRepository.findOneBy({
       id: Number(insertResult.identifiers[0].id),
     });
     if (!insertedPost) {

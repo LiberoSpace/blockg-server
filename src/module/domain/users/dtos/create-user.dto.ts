@@ -21,11 +21,4 @@ export class CreateUserDto {
   @IsString()
   @IsOptional()
   nickName?: string;
-
-  @ApiPropertyOptional({
-    description: '핸들. @제외',
-  })
-  @IsString()
-  @IsOptional()
-  handle?: string;
 }
