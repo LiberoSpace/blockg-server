@@ -1,4 +1,9 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class ExchangeRate {
@@ -10,4 +15,9 @@ export class ExchangeRate {
 
   @Column('jsonb')
   conversionRate: Record<string, number>;
+
+  @CreateDateColumn({
+    type: 'timestamp with time zone',
+  })
+  createdAt: Date;
 }
