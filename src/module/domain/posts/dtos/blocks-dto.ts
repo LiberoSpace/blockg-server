@@ -1,12 +1,15 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
+  IsArray,
   IsBoolean,
   IsEnum,
   IsNumber,
   IsOptional,
   IsString,
+  ValidateNested,
 } from 'class-validator';
 import { BlockType } from '../enums/block-type.enum';
+import { Type } from 'class-transformer';
 
 export class BlockDto {
   @ApiProperty({
@@ -85,4 +88,15 @@ export class BlockDto {
   @IsNumber()
   @IsOptional()
   expense?: number;
+
+  @ApiPropertyOptional({
+    description: '하위 블록. 현재는 날짜만 지원',
+    type: BlockDto,
+    isArray: true,
+  })
+  @Type(() => BlockDto)
+  @ValidateNested({ each: true })
+  @IsArray()
+  @IsOptional()
+  blocks?: BlockDto[];
 }

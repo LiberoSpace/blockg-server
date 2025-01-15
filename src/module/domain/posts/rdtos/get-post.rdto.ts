@@ -10,6 +10,8 @@ import {
 import { BlockDto } from '../dtos/blocks-dto';
 import { Post } from '../entities/post.entity';
 import { PostStatus } from '../enums/post-status.enum';
+import { Block } from '../entities/block.entity';
+import { instanceToInstance, plainToInstance } from 'class-transformer';
 
 export class GetPostRdto {
   @ApiProperty({})
@@ -93,7 +95,7 @@ export class GetPostRdto {
     rdto.totalExpense = post.totalExpense;
     rdto.views = post.views;
 
-    rdto.blocks = post.content;
+    rdto.blocks = plainToInstance(Block, post.content);
     return rdto;
   }
 }

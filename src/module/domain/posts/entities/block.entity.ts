@@ -14,6 +14,7 @@ export class Block {
   isThumbnail?: boolean;
   memo?: string;
   expense?: number;
+  blocks?: Block[];
 
   static fromBlockDto(dto: BlockDto): Block {
     const block = new Block();
@@ -25,6 +26,7 @@ export class Block {
         }
         block.content = dto.content;
         break;
+
       case BlockType.HEADER:
         if (dto.content === undefined || dto.content === null) {
           throw new BadRequestException('content가 없습니다.');
@@ -36,6 +38,7 @@ export class Block {
         }
         block.subType = dto.subType;
         break;
+
       case BlockType.IMAGE:
         if (!dto.url) {
           throw new BadRequestException('url이 없습니다.');
@@ -45,6 +48,7 @@ export class Block {
           block.isThumbnail = true;
         }
         break;
+
       case BlockType.PLACE:
         if (!dto.placeId) {
           throw new BadRequestException('placeId이 없습니다.');
@@ -63,6 +67,7 @@ export class Block {
         block.placeId = dto.placeId;
         block.url = dto.url;
         break;
+
       case BlockType.EXPENSE:
         if (!dto.expense) {
           throw new BadRequestException('expense가 없습니다.');
@@ -74,9 +79,38 @@ export class Block {
         block.currencyCode = dto.currencyCode;
         block.memo = dto.memo;
         break;
+
       case BlockType.SCHEDULE:
+        if (!dto.blocks || dto.blocks.length === 0) {
+          throw new BadRequestException(
+            '일정 블록에 하위 블록이 하나도 없습니다.',
+          );
+        }
+        if (!dto.blocks.every((block) => block.type === BlockType.DATE)) {
+          throw new BadRequestException(
+            '일정 블록의 모든 하위 블록은 날짜 블록이어야 합니다.',
+          );
+        }
+        block.blocks = dto.blocks.map((block) => Block.fromBlockDto(block));
         break;
+
       case BlockType.DATE:
+        if (!dto.blocks || dto.blocks.length === 0) {
+          throw new BadRequestException(
+            '날짜 블록에 하위 블록이 하나도 없습니다.',
+          );
+        }
+        if (
+          !dto.blocks.every(
+            (block) =>
+              block.type === BlockType.PLACE || block.type === BlockType.TEXT,
+          )
+        ) {
+          throw new BadRequestException(
+            '날짜 블록의 모든 하위 블록은 장소 블록이거나 텍스트 블록이어야 합니다.',
+          );
+        }
+        block.blocks = dto.blocks.map((block) => Block.fromBlockDto(block));
         break;
     }
     return block;
