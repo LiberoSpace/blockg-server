@@ -25,6 +25,12 @@ export class GetPostRdto {
   title: string;
 
   @ApiProperty({
+    description: '이미지 썸네일 Url',
+  })
+  @IsString()
+  thumbnailUrl: string | null;
+
+  @ApiProperty({
     description: '프로필 이미지가 저장된 경로',
     nullable: true,
   })
@@ -86,6 +92,7 @@ export class GetPostRdto {
     const rdto = new GetPostRdto();
     rdto.id = post.id;
     rdto.title = post.title;
+    rdto.thumbnailUrl = post.thumbnailUrl;
 
     rdto.profileImageUrl = post.user.profileImageUrl;
     rdto.nickName = post.user.nickName;
