@@ -9,9 +9,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 import { ExchangeRateService } from '../exchange-rate/exchange-rate.service';
-import { User } from '../users/entities/user.entity';
-import { UpdatePostMetadataDto } from './dtos/update-post-metadata.dto';
-import { UpdatePostDto } from './dtos/update-post.dto';
+import { UpdatePostMetadataDto } from './apis/dtos/update-post-metadata.dto';
+import { UpdatePostDto } from './apis/dtos/update-post.dto';
 import { Block } from './entities/block.entity';
 import { Post } from './entities/post.entity';
 import { BlockType } from './enums/block-type.enum';
@@ -19,33 +18,31 @@ import { PostStatus } from './enums/post-status.enum';
 import { UpdatePostEvent } from './enums/update-post-event.enum';
 
 @Injectable()
-export class PostsService {
+export class PostService {
   constructor(
     @InjectRepository(Post)
-    private postsRepository: Repository<Post>,
-    @InjectRepository(User)
-    private usersRepository: Repository<User>,
+    private postRepository: Repository<Post>,
 
     private exchangeRateService: ExchangeRateService,
   ) {}
 
   // async findAll(): Promise<Post[]> {
-  //   return await this.postsRepository.find();
+  //   return await this.postRepository.find();
   // }
 
   // TODO: 개인 생각 블록 처리
   async findOne(referenceId: string): Promise<Post | null> {
-    return await this.postsRepository.findOne({
+    return await this.postRepository.findOne({
       where: { referenceId: referenceId },
       relations: { user: true },
     });
   }
 
   async createPost(userId: number): Promise<Post> {
-    const insertResult = await this.postsRepository.insert({
+    const insertResult = await this.postRepository.insert({
       userId,
     });
-    const insertedPost = await this.postsRepository.findOneBy({
+    const insertedPost = await this.postRepository.findOneBy({
       id: Number(insertResult.identifiers[0].id),
     });
     if (!insertedPost) {
@@ -56,7 +53,7 @@ export class PostsService {
   }
 
   async updatePost(postId: number, userId: number, dto: UpdatePostDto) {
-    const post = await this.postsRepository.findOneBy({
+    const post = await this.postRepository.findOneBy({
       id: postId,
     });
     if (!post) {
@@ -121,20 +118,20 @@ export class PostsService {
     }
 
     console.log(postUpdateInterface);
-    await this.postsRepository.update({ id: postId }, postUpdateInterface);
+    await this.postRepository.update({ id: postId }, postUpdateInterface);
   }
 
   async updatePostMetadata(referenceId: string, dto: UpdatePostMetadataDto) {
     switch (dto.event) {
       case UpdatePostEvent.VIEW:
-        await this.postsRepository.increment(
+        await this.postRepository.increment(
           { referenceId: referenceId },
           'views',
           1,
         );
         break;
       case UpdatePostEvent.SHARE:
-        await this.postsRepository.increment(
+        await this.postRepository.increment(
           { referenceId: referenceId },
           'shareCount',
           1,
@@ -145,13 +142,13 @@ export class PostsService {
   }
 
   async deletePost(postId: number, userId: number): Promise<void> {
-    const post = await this.postsRepository.findOneBy({
+    const post = await this.postRepository.findOneBy({
       id: postId,
     });
     if (!post) throw new NotFoundException('삭제하려는 글이 없습니다.');
     if (post.userId != userId)
       throw new ForbiddenException('글에 대한 소유권이 없습니다.');
 
-    await this.postsRepository.delete({ id: postId });
+    await this.postRepository.delete({ id: postId });
   }
 }

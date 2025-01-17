@@ -12,7 +12,7 @@ import { uniqueHandleGenerator } from './unique-handle-generator';
 import { NickNameGenerator } from './nick-name-generator';
 
 @Injectable()
-export class UsersService {
+export class UserService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,

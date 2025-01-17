@@ -5,12 +5,14 @@ import {
   Entity,
   Index,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { User } from '../../users/entities/user.entity';
+import { User } from '../../user/entities/user.entity';
 import { PostStatus } from '../enums/post-status.enum';
 import { Block } from './block.entity';
+import { PostLike } from './post-like.entity';
 
 @Index('reference_id_index', ['referenceId'])
 @Entity()
@@ -68,4 +70,7 @@ export class Post {
 
   @Column()
   userId: number;
+
+  @OneToMany(() => PostLike, (postLike) => postLike.post)
+  postLikes: PostLike[];
 }

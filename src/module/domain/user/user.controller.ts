@@ -16,14 +16,14 @@ import {
 } from '@nestjs/swagger';
 import { FirebaseAuthGuard } from '../../../guards/firebase-auth.guard';
 import { CreateUserDto } from './dtos/create-user.dto';
-import { UsersService } from './users.service';
+import { UserService } from './user.service';
 
 @ApiBearerAuth('JWT')
 @UseGuards(FirebaseAuthGuard)
 @ApiTags('유저')
 @Controller('blockg/api/v1/users')
-export class UsersController {
-  constructor(private UsersService: UsersService) {}
+export class UserController {
+  constructor(private UserService: UserService) {}
 
   @ApiOperation({
     summary: '자기 정보 상세 조회',
@@ -33,7 +33,7 @@ export class UsersController {
     if (req.user.handle != handle) {
       throw new ForbiddenException('자신의 정보를 조회하지 않았습니다.');
     }
-    await this.UsersService.getUser({ handle });
+    await this.UserService.getUser({ handle });
   }
 
   @ApiOperation({
@@ -49,6 +49,6 @@ export class UsersController {
     @Body() dto: CreateUserDto,
   ): Promise<number> {
     const user = req.user;
-    return await this.UsersService.createUser(user.uid, dto);
+    return await this.UserService.createUser(user.uid, dto);
   }
 }

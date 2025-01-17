@@ -1,4 +1,5 @@
-import { Post } from '../../posts/entities/post.entity';
+import { PostLike } from '../../post/entities/post-like.entity';
+import { Post } from '../../post/entities/post.entity';
 import {
   Column,
   CreateDateColumn,
@@ -42,4 +43,7 @@ export class User {
 
   @OneToMany(() => Post, (post) => post.user)
   posts: Post[];
+
+  @OneToMany(() => PostLike, (postLike) => postLike.user)
+  postLikes: PostLike[];
 }

@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum } from 'class-validator';
-import { UpdatePostEvent } from '../enums/update-post-event.enum';
+import { UpdatePostEvent } from '../../enums/update-post-event.enum';
 
 export class UpdatePostMetadataDto {
   @ApiProperty({

@@ -15,18 +15,18 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import { FirebaseAuthGuard } from '../../../guards/firebase-auth.guard';
-import { PostsService } from './posts.service';
+import { FirebaseAuthGuard } from '../../../../guards/firebase-auth.guard';
+import { PostService } from '../post.service';
 import { UpdatePostDto } from './dtos/update-post.dto';
-import { User } from '../users/entities/user.entity';
-import { PostStatus } from './enums/post-status.enum';
+import { User } from '../../user/entities/user.entity';
+import { PostStatus } from '../enums/post-status.enum';
 
 @ApiBearerAuth('JWT')
 @UseGuards(FirebaseAuthGuard)
 @ApiTags('글')
 @Controller('blockg/api/v1/posts')
-export class PostsController {
-  constructor(private readonly postsService: PostsService) {}
+export class PostController {
+  constructor(private readonly postService: PostService) {}
 
   @ApiOperation({
     summary: '글 생성하기.',
@@ -42,7 +42,7 @@ export class PostsController {
     referenceId: string;
   }> {
     const user = req.user;
-    const post = await this.postsService.createPost(user.id);
+    const post = await this.postService.createPost(user.id);
     return {
       id: post.id,
       referenceId: post.referenceId,
@@ -66,7 +66,7 @@ export class PostsController {
         '임시 상태로는 글을 업데이트할 수 없습니다.',
       );
     }
-    await this.postsService.updatePost(postId, user.id, dto);
+    await this.postService.updatePost(postId, user.id, dto);
   }
 
   @ApiOperation({
@@ -76,6 +76,6 @@ export class PostsController {
   async deletePost(@Request() req: any, @Param('postId') postId: number) {
     const user: User = req.user;
 
-    await this.postsService.deletePost(postId, user.id);
+    await this.postService.deletePost(postId, user.id);
   }
 }

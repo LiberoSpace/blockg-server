@@ -1,5 +1,5 @@
 import { BadRequestException } from '@nestjs/common';
-import { BlockDto } from '../dtos/blocks-dto';
+import { BlockDto } from '../apis/dtos/blocks-dto';
 import { BlockType } from '../enums/block-type.enum';
 
 export class Block {

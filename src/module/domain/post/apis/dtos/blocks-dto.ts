@@ -8,7 +8,7 @@ import {
   IsString,
   ValidateNested,
 } from 'class-validator';
-import { BlockType } from '../enums/block-type.enum';
+import { BlockType } from '../../enums/block-type.enum';
 import { Type } from 'class-transformer';
 
 export class BlockDto {
