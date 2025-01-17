@@ -3,6 +3,8 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
+  NotFoundException,
   Param,
   Patch,
   Post,
@@ -20,6 +22,7 @@ import { PostService } from '../post.service';
 import { UpdatePostDto } from './dtos/update-post.dto';
 import { User } from '../../user/entities/user.entity';
 import { PostStatus } from '../enums/post-status.enum';
+import { GetPostRdto } from './rdtos/get-post.rdto';
 
 @ApiBearerAuth('JWT')
 @UseGuards(FirebaseAuthGuard)
@@ -27,6 +30,28 @@ import { PostStatus } from '../enums/post-status.enum';
 @Controller('blockg/api/v1/posts')
 export class PostController {
   constructor(private readonly postService: PostService) {}
+
+  @ApiOperation({
+    summary: '글 상세 조회',
+  })
+  @ApiOkResponse({
+    type: GetPostRdto,
+  })
+  @Get('/:referenceId')
+  async getPost(
+    @Request() req: any,
+    @Param('referenceId')
+    referenceId: string,
+  ): Promise<GetPostRdto> {
+    const user: User = req.user;
+    const post = await this.postService.findOne(referenceId, user);
+    if (!post) {
+      throw new NotFoundException('글이 없습니다.');
+    }
+    if (user.id !== post.userId) {
+    }
+    return GetPostRdto.fromEntity({ post, isMine: true });
+  }
 
   @ApiOperation({
     summary: '글 생성하기.',

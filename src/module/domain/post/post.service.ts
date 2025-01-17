@@ -16,6 +16,7 @@ import { Post } from './entities/post.entity';
 import { BlockType } from './enums/block-type.enum';
 import { PostStatus } from './enums/post-status.enum';
 import { UpdatePostEvent } from './enums/update-post-event.enum';
+import { User } from '../user/entities/user.entity';
 
 @Injectable()
 export class PostService {
@@ -30,12 +31,16 @@ export class PostService {
   //   return await this.postRepository.find();
   // }
 
-  // TODO: 개인 생각 블록 처리
-  async findOne(referenceId: string): Promise<Post | null> {
-    return await this.postRepository.findOne({
+  async findOne(referenceId: string, requestUser?: User): Promise<Post | null> {
+    const post = await this.postRepository.findOne({
       where: { referenceId: referenceId },
-      relations: { user: true },
+      relations: { user: true, postLikes: true },
     });
+
+    if (!post) return null;
+
+    post.likeCount = post.postLikes.length;
+    return post;
   }
 
   async createPost(userId: number): Promise<Post> {
@@ -72,6 +77,14 @@ export class PostService {
         throw e;
       }
     });
+    if (
+      blocks.filter((block) => block.type !== BlockType.SECRET).length === 0
+    ) {
+      throw new BadRequestException(
+        '1개 이상의 비밀글이 아닌 블록을 넣어야 합니다.',
+      );
+    }
+
     // ## 글 업데이트 인터페이스에 정보 추가
     const postUpdateInterface: QueryDeepPartialEntity<Post> = {
       title: dto.title,

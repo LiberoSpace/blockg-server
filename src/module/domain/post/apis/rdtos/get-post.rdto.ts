@@ -12,6 +12,7 @@ import { Post } from '../../entities/post.entity';
 import { PostStatus } from '../../enums/post-status.enum';
 import { Block } from '../../entities/block.entity';
 import { instanceToInstance, plainToInstance } from 'class-transformer';
+import { BlockType } from '../../enums/block-type.enum';
 
 export class GetPostRdto {
   @ApiProperty({})
@@ -44,6 +45,11 @@ export class GetPostRdto {
   nickName: string;
 
   @ApiProperty({
+    description: '핸들',
+  })
+  handle: string;
+
+  @ApiProperty({
     description: '출판일',
   })
   @IsDate()
@@ -68,6 +74,12 @@ export class GetPostRdto {
   views: number;
 
   @ApiProperty({
+    description: '좋아요 수',
+  })
+  @IsInt()
+  likeCount: number;
+
+  @ApiProperty({
     description: '글 상태',
   })
   @IsEnum(PostStatus)
@@ -88,7 +100,13 @@ export class GetPostRdto {
   @IsArray()
   blocks: BlockDto[];
 
-  static fromEntity(post: Post) {
+  static fromEntity({
+    post,
+    isMine = false,
+  }: {
+    post: Post;
+    isMine?: boolean;
+  }) {
     const rdto = new GetPostRdto();
     rdto.id = post.id;
     rdto.title = post.title;
@@ -96,12 +114,19 @@ export class GetPostRdto {
 
     rdto.profileImageUrl = post.user.profileImageUrl;
     rdto.nickName = post.user.nickName;
+    rdto.handle = post.user.handle;
 
     rdto.publishedAt = post.publishedAt;
     rdto.blockCount = post.blockCount;
     rdto.totalExpense = post.totalExpense;
     rdto.views = post.views;
+    rdto.likeCount = post.likeCount;
 
+    if (!isMine) {
+      post.content = post.content.filter(
+        (block) => block.type !== BlockType.SECRET,
+      );
+    }
     rdto.blocks = plainToInstance(Block, post.content);
     return rdto;
   }

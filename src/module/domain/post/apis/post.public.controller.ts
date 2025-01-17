@@ -11,7 +11,7 @@ import { UpdatePostMetadataDto } from './dtos/update-post-metadata.dto';
 import { PostService } from '../post.service';
 import { GetPostRdto } from './rdtos/get-post.rdto';
 
-@ApiTags('글 - public')
+@ApiTags('글')
 @Controller('blockg/public-api/v1/posts')
 export class PostPublicController {
   constructor(private readonly postService: PostService) {}
@@ -31,7 +31,7 @@ export class PostPublicController {
     if (!post) {
       throw new NotFoundException('글이 없습니다.');
     }
-    return GetPostRdto.fromEntity(post);
+    return GetPostRdto.fromEntity({ post });
   }
 
   @ApiOperation({

@@ -73,4 +73,6 @@ export class Post {
 
   @OneToMany(() => PostLike, (postLike) => postLike.post)
   postLikes: PostLike[];
+
+  likeCount: number;
 }

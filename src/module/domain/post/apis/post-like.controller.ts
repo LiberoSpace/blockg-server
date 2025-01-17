@@ -1,6 +1,7 @@
 import {
   Controller,
   Delete,
+  Get,
   MethodNotAllowedException,
   Param,
   Post,
@@ -10,6 +11,7 @@ import {
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
+  ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
@@ -26,6 +28,29 @@ import { Response } from 'express';
 @Controller('blockg/api/v1/posts/:postId/likes')
 export class PostLikeController {
   constructor(private readonly postLikeService: PostLikeService) {}
+
+  @ApiOperation({
+    summary: '글 좋아요 가져오기',
+    description:
+      '자신의 글 좋아요 식별자를 가져옵니다. 없으면 null을 반환합니다.',
+  })
+  @ApiOkResponse({
+    description: '자신의 글 좋아요 식별자를 가져옴',
+    type: Number,
+  })
+  @Get('/')
+  async getPostLike(
+    @Request() req: any,
+    @Param('postId') postId: number,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<number | null> {
+    const user = req.user;
+    const postLike = await this.postLikeService.getPostLike(postId, user);
+    if (postLike === null) {
+      return null;
+    }
+    return postLike.id;
+  }
 
   @ApiOperation({
     summary: '글 좋아요하기',

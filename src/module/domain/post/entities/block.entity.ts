@@ -20,7 +20,8 @@ export class Block {
     const block = new Block();
     block.type = dto.type;
     switch (dto.type) {
-      case BlockType.TEXT || BlockType.SECRET:
+      case BlockType.TEXT:
+      case BlockType.SECRET:
         if (dto.content === undefined || dto.content === null) {
           throw new BadRequestException('content가 없습니다.');
         }

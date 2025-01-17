@@ -11,6 +11,16 @@ export class PostLikeService {
     private postLikeRepository: Repository<PostLike>,
   ) {}
 
+  async getPostLike(
+    postId: number,
+    requestUser: User,
+  ): Promise<PostLike | null> {
+    return await this.postLikeRepository.findOneBy({
+      postId: postId,
+      userId: requestUser.id,
+    });
+  }
+
   async createPostLike(postId: number, actor: User): Promise<number> {
     const insertedResult = await this.postLikeRepository.insert({
       userId: actor.id,

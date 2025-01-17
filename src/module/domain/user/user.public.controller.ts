@@ -3,7 +3,7 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UserService } from './user.service';
 
 @Controller('blockg/public-api/v1/users')
-@ApiTags('유저 - public')
+@ApiTags('유저')
 export class UserPublicController {
   constructor(private UserService: UserService) {}
 
