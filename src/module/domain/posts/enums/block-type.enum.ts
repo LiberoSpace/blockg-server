@@ -1,6 +1,6 @@
 export enum BlockType {
   TEXT = 'text',
-  HEADER = 'header',
+  HEADLINE = 'headline',
   IMAGE = 'image',
   PLACE = 'place',
   EXPENSE = 'expense',

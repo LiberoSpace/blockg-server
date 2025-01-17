@@ -27,7 +27,7 @@ export class Block {
         block.content = dto.content;
         break;
 
-      case BlockType.HEADER:
+      case BlockType.HEADLINE:
         if (dto.content === undefined || dto.content === null) {
           throw new BadRequestException('content가 없습니다.');
         }

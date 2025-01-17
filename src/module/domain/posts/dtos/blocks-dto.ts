@@ -27,7 +27,7 @@ export class BlockDto {
   subType?: string;
 
   @ApiPropertyOptional({
-    description: '내용. 사용: [text, header*, secret]',
+    description: '내용. 사용: [text, headline, secret]',
   })
   @IsString()
   @IsOptional()
