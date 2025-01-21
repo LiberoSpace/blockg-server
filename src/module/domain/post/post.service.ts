@@ -17,7 +17,7 @@ import { BlockType } from './enums/block-type.enum';
 import { PostStatus } from './enums/post-status.enum';
 import { UpdatePostEvent } from './enums/update-post-event.enum';
 import { User } from '../user/entities/user.entity';
-import { Page } from 'src/utils/page';
+import { Page } from '../../../utils/page';
 import { GetPostsDto } from './apis/dtos/get-posts.dto';
 
 @Injectable()

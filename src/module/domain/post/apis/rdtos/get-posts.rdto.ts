@@ -1,6 +1,6 @@
-import { PageRdto } from 'src/utils/page.rdto';
+import { PageRdto } from '../../../../../utils/page.rdto';
 import { Post } from '../../entities/post.entity';
-import { Page } from 'src/utils/page';
+import { Page } from '../../../../../utils/page';
 import { ApiProperty } from '@nestjs/swagger';
 import { GetPostRdto } from './get-post.rdto';
 
