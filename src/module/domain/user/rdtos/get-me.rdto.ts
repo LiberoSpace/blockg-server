@@ -49,6 +49,7 @@ export class GetMeRdto {
     me.nickName = user.nickName;
     me.handle = user.handle;
     me.createdAt = user.createdAt;
+    console.log(typeof statistics.postViews);
     me.statistics = plainToInstance(UserStatistics, statistics);
     return me;
   }

@@ -9,8 +9,8 @@ import { Exclude } from 'class-transformer';
     dataSource
       .createQueryBuilder()
       .select('user.id', 'userId')
-      .addSelect('SUM(post.views)', 'postViews')
-      .addSelect('SUM(post.blockCount)', 'blockCount')
+      .addSelect('CAST(SUM(post.views) AS integer)', 'postViews')
+      .addSelect('CAST(SUM(post.blockCount) AS integer)', 'blockCount')
       .from(User, 'user')
       .leftJoin(Post, 'post', 'user.id = post.userId')
       .groupBy('user.id'),
@@ -23,12 +23,26 @@ export class UserStatistics {
   @ApiProperty({
     description: '글 조회수 합',
   })
-  @ViewColumn()
+  @ViewColumn({
+    transformer: {
+      to(value: any) {},
+      from(value: number | null): number {
+        return value ?? 0;
+      },
+    },
+  })
   postViews: number;
 
   @ApiProperty({
     description: '블록 수 합',
   })
-  @ViewColumn()
+  @ViewColumn({
+    transformer: {
+      to(value: any) {},
+      from(value: number | null): number {
+        return value ?? 0;
+      },
+    },
+  })
   blockCount: number;
 }
