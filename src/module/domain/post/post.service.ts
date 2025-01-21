@@ -77,9 +77,10 @@ export class PostService {
         throw e;
       }
     });
-    if (
-      blocks.filter((block) => block.type !== BlockType.SECRET).length === 0
-    ) {
+    const blockCount = blocks.filter(
+      (block) => block.type !== BlockType.SECRET,
+    ).length;
+    if (blockCount === 0) {
       throw new BadRequestException(
         '1개 이상의 비밀글이 아닌 블록을 넣어야 합니다.',
       );
@@ -89,7 +90,7 @@ export class PostService {
     const postUpdateInterface: QueryDeepPartialEntity<Post> = {
       title: dto.title,
       status: dto.status,
-      blockCount: blocks.length, // 블럭 개수 계산
+      blockCount: blockCount, // 블럭 개수 계산
       content: blocks,
     };
     // 썸네일 지정

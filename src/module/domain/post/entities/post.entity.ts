@@ -35,7 +35,6 @@ export class Post {
   @Column({ default: 0 })
   shareCount: number;
 
-  @Exclude()
   @Column({ default: 0 })
   views: number;
 
