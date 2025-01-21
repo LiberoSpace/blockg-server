@@ -17,6 +17,8 @@ import { BlockType } from './enums/block-type.enum';
 import { PostStatus } from './enums/post-status.enum';
 import { UpdatePostEvent } from './enums/update-post-event.enum';
 import { User } from '../user/entities/user.entity';
+import { Page } from 'src/utils/page';
+import { GetPostsDto } from './apis/dtos/get-posts.dto';
 
 @Injectable()
 export class PostService {
@@ -27,9 +29,17 @@ export class PostService {
     private exchangeRateService: ExchangeRateService,
   ) {}
 
-  // async findAll(): Promise<Post[]> {
-  //   return await this.postRepository.find();
-  // }
+  async findPage(dto: GetPostsDto): Promise<Page<Post>> {
+    const [posts, totalCount] = await this.postRepository.findAndCount({
+      where: { status: PostStatus.PUBLISHED },
+      relations: { user: true },
+      order: { publishedAt: 'DESC' },
+      take: dto.limit,
+      skip: dto.page * dto.limit,
+    });
+
+    return new Page(totalCount, posts, dto.limit, dto.page);
+  }
 
   async findOne(referenceId: string, requestUser?: User): Promise<Post | null> {
     const post = await this.postRepository.findOne({

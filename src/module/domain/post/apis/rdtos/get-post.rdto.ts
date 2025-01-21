@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsArray,
   IsDate,
@@ -73,11 +73,11 @@ export class GetPostRdto {
   @IsInt()
   views: number;
 
-  @ApiProperty({
-    description: '좋아요 수',
+  @ApiPropertyOptional({
+    description: '좋아요 수. 목록 조회 시 보이지 않음.',
   })
   @IsInt()
-  likeCount: number;
+  likeCount?: number;
 
   @ApiProperty({
     description: '공유 수',
@@ -93,6 +93,7 @@ export class GetPostRdto {
 
   @ApiProperty({
     description: '글 상태',
+    enum: PostStatus,
   })
   @IsEnum(PostStatus)
   status: PostStatus;
@@ -136,7 +137,7 @@ export class GetPostRdto {
     rdto.shareCount = post.shareCount;
     rdto.commentCount = 0;
 
-    if (!isMine) {
+    if (!isMine && post.content.length > 0) {
       post.content = post.content.filter(
         (block) => block.type !== BlockType.SECRET,
       );

@@ -5,16 +5,31 @@ import {
   NotFoundException,
   Param,
   Patch,
+  Query,
 } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { UpdatePostMetadataDto } from './dtos/update-post-metadata.dto';
 import { PostService } from '../post.service';
+import { GetPostsDto } from './dtos/get-posts.dto';
+import { UpdatePostMetadataDto } from './dtos/update-post-metadata.dto';
 import { GetPostRdto } from './rdtos/get-post.rdto';
+import { GetPostsRdto } from './rdtos/get-posts.rdto';
 
 @ApiTags('글')
 @Controller('blockg/public-api/v1/posts')
 export class PostPublicController {
   constructor(private readonly postService: PostService) {}
+
+  @ApiOperation({
+    summary: '글 목록 조회',
+  })
+  @ApiOkResponse({
+    type: GetPostsRdto,
+  })
+  @Get('/')
+  async getPosts(@Query() dto: GetPostsDto): Promise<GetPostsRdto> {
+    const postPage = await this.postService.findPage(dto);
+    return GetPostsRdto.fromPage(postPage);
+  }
 
   @ApiOperation({
     summary: '글 상세 조회',
