@@ -11,7 +11,7 @@ import { BlockDto } from '../dtos/blocks-dto';
 import { Post } from '../../entities/post.entity';
 import { PostStatus } from '../../enums/post-status.enum';
 import { Block } from '../../entities/block.entity';
-import { instanceToInstance, plainToInstance } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 import { BlockType } from '../../enums/block-type.enum';
 
 export class GetPostRdto {
@@ -80,6 +80,18 @@ export class GetPostRdto {
   likeCount: number;
 
   @ApiProperty({
+    description: '공유 수',
+  })
+  @IsInt()
+  shareCount: number;
+
+  @ApiProperty({
+    description: '댓글 수',
+  })
+  @IsInt()
+  commentCount: number;
+
+  @ApiProperty({
     description: '글 상태',
   })
   @IsEnum(PostStatus)
@@ -121,6 +133,8 @@ export class GetPostRdto {
     rdto.totalExpense = post.totalExpense;
     rdto.views = post.views;
     rdto.likeCount = post.likeCount;
+    rdto.shareCount = post.shareCount;
+    rdto.commentCount = 0;
 
     if (!isMine) {
       post.content = post.content.filter(
