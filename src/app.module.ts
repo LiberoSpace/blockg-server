@@ -14,6 +14,7 @@ import { ConfigModule } from '@nestjs/config';
 import { ExchangeRate } from './module/domain/exchange-rate/exchange-rate.entity';
 import { AuthHttpModule } from './module/domain/user/auth-http.module';
 import { PostLike } from './module/domain/post/entities/post-like.entity';
+import { UserStatistics } from './module/domain/user/entities/user-statistics.entity';
 
 @Module({
   imports: [
@@ -27,7 +28,7 @@ import { PostLike } from './module/domain/post/entities/post-like.entity';
       username: 'postgres',
       password: env.DB_PASSWORD,
       database: 'blockg',
-      entities: [User, Post, ExchangeRate, PostLike],
+      entities: [User, Post, ExchangeRate, PostLike, UserStatistics],
       synchronize: false,
     }),
     UserHttpModule,
