@@ -103,9 +103,15 @@ export class PostService {
       blockCount: blockCount, // 블럭 개수 계산
       content: blocks,
     };
+
     // 썸네일 지정
-    const thumbnailBlock = blocks.find((block) => block.isThumbnail);
-    postUpdateInterface.thumbnailUrl = thumbnailBlock?.url ?? null;
+    const thumbnailImageBlock = blocks.find((block) => block.isThumbnail);
+    postUpdateInterface.thumbnailUrl = thumbnailImageBlock!.url ?? null;
+    const thumbnailTextBlock = blocks.find(
+      (block) => block.type === BlockType.TEXT,
+    );
+    postUpdateInterface.thumbnailText = thumbnailTextBlock!.content ?? null;
+
     // 총 비용 계산
     const expenseBlocks = blocks.filter(
       (block) => block.type === BlockType.EXPENSE,
@@ -141,7 +147,6 @@ export class PostService {
       postUpdateInterface.publishedAt = new Date();
     }
 
-    console.log(postUpdateInterface);
     await this.postRepository.update({ id: postId }, postUpdateInterface);
   }
 

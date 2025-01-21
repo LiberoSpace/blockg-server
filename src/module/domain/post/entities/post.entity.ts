@@ -20,7 +20,7 @@ export class Post {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'uuid', default: () => 'uuid_generate_v4()' })
+  @Column({ type: 'uuid', default: 'uuid_generate_v4()' })
   referenceId: string; // 기본적으로 UUID 생성
 
   @Column({ nullable: true })
@@ -28,6 +28,9 @@ export class Post {
 
   @Column('character varying', { nullable: true })
   thumbnailUrl: string | null;
+
+  @Column('character varying', { nullable: true })
+  thumbnailText: string | null;
 
   @Column({ default: 0 })
   blockCount: number;
