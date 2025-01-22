@@ -31,7 +31,10 @@ export class PostService {
 
   async findPage(dto: GetPostsDto): Promise<Page<Post>> {
     const [posts, totalCount] = await this.postRepository.findAndCount({
-      where: { status: PostStatus.PUBLISHED },
+      where: {
+        status: PostStatus.PUBLISHED,
+        ...{ curationNumber: dto.curationNumber ?? undefined },
+      },
       relations: { user: true },
       order: { publishedAt: 'DESC' },
       take: dto.limit,

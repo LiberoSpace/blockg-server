@@ -20,7 +20,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "migration:generate": "npx ts-node ./node_modules/typeorm/cli.js migration:generate -d ./data-source-config.ts src/migrations/addThumbnailTextInPost",
+    "migration:generate": "npx ts-node ./node_modules/typeorm/cli.js migration:generate -d ./data-source-config.ts src/migrations/addCurationNumber",
     "migration:create": "npx ts-node ./node_modules/typeorm/cli.js migration:create ./src/migrations/updateScoreboardSportTypeEnum",
     "migration:run": "npx ts-node ./node_modules/typeorm/cli.js migration:run -d ./data-source-config.ts",
     "migration:revert": "npx ts-node ./node_modules/typeorm/cli.js migration:revert -d ./data-source-config.ts"

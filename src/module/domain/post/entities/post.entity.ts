@@ -73,6 +73,9 @@ export class Post {
   @Column()
   userId: number;
 
+  @Column('smallint', { nullable: true })
+  curationNumber?: number;
+
   @OneToMany(() => PostLike, (postLike) => postLike.post)
   postLikes: PostLike[];
 
