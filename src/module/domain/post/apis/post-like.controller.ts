@@ -86,7 +86,7 @@ export class PostLikeController {
     summary: '글 좋아요 취소하기',
   })
   @Delete('/:postLikeId')
-  async deletePost(
+  async deletePostLike(
     @Request() req: any,
     @Param('postLikeId') postLikeId: number,
   ) {

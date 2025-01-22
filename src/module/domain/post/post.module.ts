@@ -5,10 +5,15 @@ import { PostLike } from './entities/post-like.entity';
 import { Post } from './entities/post.entity';
 import { PostLikeService } from './post-like.service';
 import { PostService } from './post.service';
+import { PostCommentService } from './post-comment.service';
+import { PostComment } from './entities/post-comment.entity';
 
 @Module({
-  imports: [ExchangeRateModule, TypeOrmModule.forFeature([Post, PostLike])],
-  providers: [PostService, PostLikeService],
-  exports: [PostService, PostLikeService],
+  imports: [
+    ExchangeRateModule,
+    TypeOrmModule.forFeature([Post, PostLike, PostComment]),
+  ],
+  providers: [PostService, PostLikeService, PostCommentService],
+  exports: [PostService, PostLikeService, PostCommentService],
 })
 export class PostModule {}
