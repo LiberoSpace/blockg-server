@@ -13,6 +13,7 @@ import { User } from '../../user/entities/user.entity';
 import { PostStatus } from '../enums/post-status.enum';
 import { Block } from './block.entity';
 import { PostLike } from './post-like.entity';
+import { PostComment } from './post-comment.entity';
 
 @Index('reference_id_index', ['referenceId'])
 @Entity()
@@ -79,5 +80,9 @@ export class Post {
   @OneToMany(() => PostLike, (postLike) => postLike.post)
   postLikes: PostLike[];
 
+  @OneToMany(() => PostComment, (postComment) => postComment.post)
+  postComments: PostComment[];
+
   likeCount: number;
+  commentCount: number;
 }

@@ -21,6 +21,12 @@ export class PostCommentService {
     });
   }
 
+  async getPostCommentCount(postId: number): Promise<number> {
+    return await this.postCommentRepository.countBy({
+      postId: postId,
+    });
+  }
+
   async createPostComment(
     { postId, content }: { postId: number; content: string },
     requestUser: User,

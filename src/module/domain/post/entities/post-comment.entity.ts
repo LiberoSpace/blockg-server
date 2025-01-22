@@ -27,13 +27,13 @@ export class PostComment {
   })
   updatedAt: Date;
 
-  @ManyToOne(() => User, (user) => user.postLikes, { onDelete: 'CASCADE' })
+  @ManyToOne(() => User, (user) => user.postComments, { onDelete: 'CASCADE' })
   user: User;
 
   @Column()
   userId: number;
 
-  @ManyToOne(() => Post, (post) => post.postLikes, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Post, (post) => post.postComments, { onDelete: 'CASCADE' })
   post: Post;
 
   @Column()

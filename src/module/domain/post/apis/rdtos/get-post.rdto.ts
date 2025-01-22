@@ -149,7 +149,7 @@ export class GetPostRdto {
     rdto.views = post.views;
     rdto.likeCount = post.likeCount;
     rdto.shareCount = post.shareCount;
-    rdto.commentCount = 0;
+    rdto.commentCount = post.commentCount;
 
     if (!isMine && post.content.length > 0) {
       post.content = post.content.filter(

@@ -19,6 +19,8 @@ import { UpdatePostEvent } from './enums/update-post-event.enum';
 import { User } from '../user/entities/user.entity';
 import { Page } from '../../../utils/page';
 import { GetPostsDto } from './apis/dtos/get-posts.dto';
+import { PostCommentService } from './post-comment.service';
+import { PostLikeService } from './post-like.service';
 
 @Injectable()
 export class PostService {
@@ -27,6 +29,8 @@ export class PostService {
     private postRepository: Repository<Post>,
 
     private exchangeRateService: ExchangeRateService,
+    private postLikeService: PostLikeService,
+    private postCommentService: PostCommentService,
   ) {}
 
   async findPage(dto: GetPostsDto): Promise<Page<Post>> {
@@ -47,12 +51,14 @@ export class PostService {
   async findOne(referenceId: string, requestUser?: User): Promise<Post | null> {
     const post = await this.postRepository.findOne({
       where: { referenceId: referenceId },
-      relations: { user: true, postLikes: true },
+      relations: { user: true },
     });
 
     if (!post) return null;
-
-    post.likeCount = post.postLikes.length;
+    [post.likeCount, post.commentCount] = await Promise.all([
+      await this.postLikeService.getPostLikeCount(post.id),
+      await this.postCommentService.getPostCommentCount(post.id),
+    ]);
     return post;
   }
 

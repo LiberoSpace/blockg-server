@@ -21,6 +21,12 @@ export class PostLikeService {
     });
   }
 
+  async getPostLikeCount(postId: number): Promise<number> {
+    return await this.postLikeRepository.countBy({
+      postId: postId,
+    });
+  }
+
   async createPostLike(postId: number, actor: User): Promise<number> {
     const insertedResult = await this.postLikeRepository.insert({
       userId: actor.id,
