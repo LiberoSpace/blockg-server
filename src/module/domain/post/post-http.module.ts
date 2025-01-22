@@ -6,7 +6,7 @@ import { PostModule } from './post.module';
 import { PostPublicController } from './apis/post.public.controller';
 import { PostLikeController } from './apis/post-like.controller';
 import { PostSchedulerController } from './apis/post.scheduler.controller';
-import { GcpModule } from 'src/module/gcp/gcp.module';
+import { GcpModule } from '../../gcp/gcp.module';
 
 @Module({
   imports: [AuthModule, PostModule, GcpModule],
