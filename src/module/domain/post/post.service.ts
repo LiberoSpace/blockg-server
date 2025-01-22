@@ -6,7 +6,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { LessThan, Repository } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 import { ExchangeRateService } from '../exchange-rate/exchange-rate.service';
 import { UpdatePostMetadataDto } from './apis/dtos/update-post-metadata.dto';
@@ -182,5 +182,15 @@ export class PostService {
       throw new ForbiddenException('글에 대한 소유권이 없습니다.');
 
     await this.postRepository.delete({ id: postId });
+  }
+
+  async deleteTemporaryPosts() {
+    const currentDate = new Date();
+    const oneDayBefore = new Date(currentDate.getTime() - 24 * 60 * 60 * 1000);
+
+    await this.postRepository.delete({
+      status: PostStatus.TEMPORARY,
+      createdAt: LessThan(oneDayBefore),
+    });
   }
 }

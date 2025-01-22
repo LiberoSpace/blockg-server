@@ -6,4 +6,4 @@ import { GcpService } from './gcp.service';
   providers: [GcpService],
   exports: [GcpService],
 })
-export class GCPModule {}
+export class GcpModule {}
