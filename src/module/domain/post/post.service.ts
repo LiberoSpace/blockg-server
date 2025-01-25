@@ -6,7 +6,14 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { LessThan, Repository } from 'typeorm';
+import {
+  Brackets,
+  FindManyOptions,
+  ILike,
+  LessThan,
+  Or,
+  Repository,
+} from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 import { ExchangeRateService } from '../exchange-rate/exchange-rate.service';
 import { UpdatePostMetadataDto } from './apis/dtos/update-post-metadata.dto';
@@ -34,16 +41,32 @@ export class PostService {
   ) {}
 
   async findPage(dto: GetPostsDto): Promise<Page<Post>> {
-    const [posts, totalCount] = await this.postRepository.findAndCount({
-      where: {
-        status: PostStatus.PUBLISHED,
-        ...{ curationNumber: dto.curationNumber ?? undefined },
-      },
-      relations: { user: true },
-      order: { publishedAt: 'DESC' },
-      take: dto.limit,
-      skip: dto.page * dto.limit,
-    });
+    const dbQuery = this.postRepository
+      .createQueryBuilder('post')
+      .leftJoinAndSelect('post.user', 'user')
+      .where('status = :status', { status: PostStatus.PUBLISHED })
+      .orderBy('"publishedAt"', 'DESC')
+      .limit(dto.limit)
+      .offset(dto.page * dto.limit);
+
+    if (dto.curationNumber) {
+      dbQuery.andWhere('"curationNumber" = :curationNumber', {
+        curationNumber: dto.curationNumber,
+      });
+    }
+
+    if (dto.search) {
+      dbQuery.andWhere(
+        new Brackets((qb) => {
+          qb.where('title LIKE :search', { search: `%${dto.search}%` }).orWhere(
+            'content::text LIKE :search',
+            { search: `%${dto.search}%` },
+          );
+        }),
+      );
+    }
+
+    const [posts, totalCount] = await dbQuery.getManyAndCount();
 
     return new Page(totalCount, posts, dto.limit, dto.page);
   }
