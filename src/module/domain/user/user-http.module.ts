@@ -3,9 +3,10 @@ import { AuthModule } from './auth.module';
 import { UserController } from './controllers/user.controller';
 import { UsersModule } from './user.module';
 import { UserPublicController } from './controllers/user.public.controller';
+import { PostModule } from '../post/post.module';
 
 @Module({
-  imports: [AuthModule, UsersModule],
+  imports: [AuthModule, UsersModule, PostModule],
   controllers: [UserController, UserPublicController],
   providers: [],
 })

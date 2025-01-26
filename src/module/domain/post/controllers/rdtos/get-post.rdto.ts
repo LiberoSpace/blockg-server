@@ -13,6 +13,8 @@ import { PostStatus } from '../../enums/post-status.enum';
 import { Block } from '../../entities/block.entity';
 import { plainToInstance } from 'class-transformer';
 import { BlockType } from '../../enums/block-type.enum';
+import { PostTag } from '../../entities/post-tag.entity';
+import { PostTagType } from '../../enums/post-tag-type.enum';
 
 export class GetPostRdto {
   @ApiProperty({})
@@ -125,6 +127,15 @@ export class GetPostRdto {
   @IsArray()
   blocks: BlockDto[];
 
+  @ApiProperty({
+    description: '글 태그 타입 배열',
+    enum: PostTagType,
+    isArray: true,
+  })
+  @IsEnum(PostTagType, { each: true })
+  @IsArray()
+  postTagType: PostTagType[];
+
   static fromEntity({
     post,
     isMine = false,
@@ -157,6 +168,11 @@ export class GetPostRdto {
       );
     }
     rdto.blocks = plainToInstance(Block, post.content);
+
+    if (post.postTags) {
+      rdto.postTagType = post.postTags.map((postTag) => postTag.tagType);
+    }
+
     return rdto;
   }
 }

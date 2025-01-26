@@ -9,24 +9,28 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, LessThan, Repository } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 import { Page } from '../../../../utils/page';
+import { ExchangeRateService } from '../../exchange-rate/services/exchange-rate.service';
 import { User } from '../../user/entities/user.entity';
 import { GetPostsDto } from '../controllers/dtos/get-posts.dto';
 import { UpdatePostMetadataDto } from '../controllers/dtos/update-post-metadata.dto';
 import { UpdatePostDto } from '../controllers/dtos/update-post.dto';
 import { Block } from '../entities/block.entity';
+import { PostTag } from '../entities/post-tag.entity';
 import { Post } from '../entities/post.entity';
 import { BlockType } from '../enums/block-type.enum';
 import { PostStatus } from '../enums/post-status.enum';
 import { UpdatePostEvent } from '../enums/update-post-event.enum';
 import { PostCommentService } from './post-comment.service';
 import { PostLikeService } from './post-like.service';
-import { ExchangeRateService } from '../../exchange-rate/services/exchange-rate.service';
+import { PostTagTypeCount } from '../interfaces/post-tag-type-count.interface';
 
 @Injectable()
 export class PostService {
   constructor(
     @InjectRepository(Post)
     private postRepository: Repository<Post>,
+    @InjectRepository(PostTag)
+    private postTagRepository: Repository<PostTag>,
 
     private exchangeRateService: ExchangeRateService,
     private postLikeService: PostLikeService,
@@ -67,7 +71,7 @@ export class PostService {
   async findOne(referenceId: string, requestUser?: User): Promise<Post | null> {
     const post = await this.postRepository.findOne({
       where: { referenceId: referenceId },
-      relations: { user: true },
+      relations: { user: true, postTags: true },
     });
 
     if (!post) return null;
@@ -93,8 +97,13 @@ export class PostService {
   }
 
   async updatePost(postId: number, userId: number, dto: UpdatePostDto) {
-    const post = await this.postRepository.findOneBy({
-      id: postId,
+    const post = await this.postRepository.findOne({
+      where: {
+        id: postId,
+      },
+      relations: {
+        postTags: true,
+      },
     });
     if (!post) {
       throw new NotFoundException('해당 글이 없습니다.');
@@ -172,7 +181,30 @@ export class PostService {
       postUpdateInterface.publishedAt = new Date();
     }
 
-    await this.postRepository.update({ id: postId }, postUpdateInterface);
+    // 업데이트 필요한 태그 가져오기
+    const existTagTypes = post.postTags.map((tag) => tag.tagType);
+    const addTagTypes = dto.postTagTypes.filter(
+      (tagType) => !existTagTypes.includes(tagType),
+    );
+    const deleteTagTypes = existTagTypes.filter(
+      (tagType) => !dto.postTagTypes.includes(tagType),
+    );
+
+    await this.postRepository.manager.transaction(async (manager) => {
+      addTagTypes.map(async (addTagType) => {
+        await manager.insert(PostTag, {
+          tagType: addTagType,
+          post: post,
+        });
+      });
+      deleteTagTypes.map(async (deleteTagType) => {
+        await manager.delete(PostTag, {
+          tagType: deleteTagType,
+          postId: post.id,
+        });
+      });
+      await manager.update(Post, { id: postId }, postUpdateInterface);
+    });
   }
 
   async updatePostMetadata(referenceId: string, dto: UpdatePostMetadataDto) {
@@ -214,5 +246,17 @@ export class PostService {
       status: PostStatus.TEMPORARY,
       createdAt: LessThan(oneDayBefore),
     });
+  }
+
+  async getUserPostTagsStatistics(userId: number): Promise<PostTagTypeCount[]> {
+    const tagTypes = await this.postTagRepository
+      .createQueryBuilder('postTag')
+      .select('"tagType"')
+      .addSelect('COUNT("tagType")')
+      .leftJoin('postTag.post', 'post')
+      .where('post.userId = :userId', { userId: userId })
+      .groupBy('"tagType"')
+      .getRawMany();
+    return tagTypes;
   }
 }

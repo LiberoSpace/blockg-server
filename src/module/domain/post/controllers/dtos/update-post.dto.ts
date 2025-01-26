@@ -1,8 +1,9 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsArray, IsEnum, IsString, ValidateNested } from 'class-validator';
 import { PostStatus } from '../../enums/post-status.enum';
 import { BlockDto } from './blocks-dto';
+import { PostTagType } from '../../enums/post-tag-type.enum';
 
 export class UpdatePostDto {
   @ApiProperty({
@@ -34,4 +35,13 @@ export class UpdatePostDto {
   @ValidateNested()
   @IsArray()
   blocks: BlockDto[];
+
+  @ApiPropertyOptional({
+    description: '태그 종류 배열',
+    enum: PostTagType,
+    isArray: true,
+  })
+  @IsEnum(PostTagType, { each: true })
+  @IsArray()
+  postTagTypes: PostTagType[];
 }

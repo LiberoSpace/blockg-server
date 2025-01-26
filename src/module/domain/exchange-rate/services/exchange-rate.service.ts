@@ -1,9 +1,9 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ExchangeRate } from './exchange-rate.entity';
 import { Repository } from 'typeorm';
 import axios from 'axios';
 import { env } from 'process';
+import { ExchangeRate } from '../entities/exchange-rate.entity';
 
 @Injectable()
 export class ExchangeRateService {

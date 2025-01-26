@@ -14,6 +14,7 @@ import { PostStatus } from '../enums/post-status.enum';
 import { Block } from './block.entity';
 import { PostLike } from './post-like.entity';
 import { PostComment } from './post-comment.entity';
+import { PostTag } from './post-tag.entity';
 
 @Index('reference_id_index', ['referenceId'])
 @Entity()
@@ -82,6 +83,9 @@ export class Post {
 
   @OneToMany(() => PostComment, (postComment) => postComment.post)
   postComments: PostComment[];
+
+  @OneToMany(() => PostTag, (postTag) => postTag.post)
+  postTags: PostTag[];
 
   likeCount: number;
   commentCount: number;

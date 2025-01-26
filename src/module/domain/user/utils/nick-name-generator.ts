@@ -1,4 +1,4 @@
-export const NickNameGenerator = () => {
+export const nickNameGenerator = () => {
   const names = [
     '여행가방',
     '닉네임 예시',

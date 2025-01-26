@@ -16,6 +16,7 @@ import { AuthHttpModule } from './module/domain/user/auth-http.module';
 import { PostLike } from './module/domain/post/entities/post-like.entity';
 import { UserStatistics } from './module/domain/user/entities/user-statistics.entity';
 import { PostComment } from './module/domain/post/entities/post-comment.entity';
+import { PostTag } from './module/domain/post/entities/post-tag.entity';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { PostComment } from './module/domain/post/entities/post-comment.entity';
         PostLike,
         UserStatistics,
         PostComment,
+        PostTag,
       ],
       synchronize: false,
     }),

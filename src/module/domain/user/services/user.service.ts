@@ -6,10 +6,11 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateUserDto } from './controllers/dtos/create-user.dto';
-import { User } from './entities/user.entity';
-import { uniqueHandleGenerator } from './unique-handle-generator';
-import { NickNameGenerator } from './nick-name-generator';
+import { User } from '../entities/user.entity';
+import { CreateUserDto } from '../controllers/dtos/create-user.dto';
+import { uniqueHandleGenerator } from '../utils/unique-handle-generator';
+import { nickNameGenerator } from '../utils/nick-name-generator';
+import { AuthService } from './auth.service';
 
 @Injectable()
 export class UserService {
@@ -79,7 +80,7 @@ export class UserService {
         uid: uid,
         profileImageUrl: dto.profileImageUrl,
         email: dto.email,
-        nickName: dto.nickName ?? NickNameGenerator(),
+        nickName: dto.nickName ?? nickNameGenerator(),
         handle: handle,
       }),
     );
