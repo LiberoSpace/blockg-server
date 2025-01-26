@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsDate, IsString } from 'class-validator';
-import { User } from '../entities/user.entity';
-import { UserStatistics } from '../entities/user-statistics.entity';
+import { User } from '../../entities/user.entity';
+import { UserStatistics } from '../../entities/user-statistics.entity';
 import { plainToInstance, Type } from 'class-transformer';
 
 export class GetMeRdto {

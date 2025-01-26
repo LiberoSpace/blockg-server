@@ -14,9 +14,9 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import { FirebaseAuthGuard } from '../../../guards/firebase-auth.guard';
+import { FirebaseAuthGuard } from '../../../../guards/firebase-auth.guard';
+import { UserService } from '../services/user.service';
 import { CreateUserDto } from './dtos/create-user.dto';
-import { UserService } from './user.service';
 
 @ApiBearerAuth('JWT')
 @UseGuards(FirebaseAuthGuard)

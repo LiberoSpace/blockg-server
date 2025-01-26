@@ -18,7 +18,7 @@ import {
 } from '@nestjs/swagger';
 import { FirebaseAuthGuard } from '../../../../guards/firebase-auth.guard';
 import { User } from '../../user/entities/user.entity';
-import { PostLikeService } from '../post-like.service';
+import { PostLikeService } from '../services/post-like.service';
 import { QueryFailedError } from 'typeorm';
 import { Response } from 'express';
 

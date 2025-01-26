@@ -5,10 +5,10 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import { FirebaseAuthGuard } from '../../../guards/firebase-auth.guard';
-import { User } from './entities/user.entity';
+import { FirebaseAuthGuard } from '../../../../guards/firebase-auth.guard';
+import { User } from '../entities/user.entity';
+import { AuthService } from '../services/auth.service';
 import { GetMeRdto } from './rdtos/get-me.rdto';
-import { AuthService } from './auth.service';
 
 @ApiBearerAuth('JWT')
 @UseGuards(FirebaseAuthGuard)

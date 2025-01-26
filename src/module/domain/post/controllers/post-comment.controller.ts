@@ -19,7 +19,7 @@ import {
 } from '@nestjs/swagger';
 import { FirebaseAuthGuard } from '../../../../guards/firebase-auth.guard';
 import { User } from '../../user/entities/user.entity';
-import { PostCommentService } from '../post-comment.service';
+import { PostCommentService } from '../services/post-comment.service';
 import { QueryFailedError } from 'typeorm';
 import { Response } from 'express';
 import { CreatePostCommentDto } from './dtos/create-post-comment.dto';

@@ -5,7 +5,7 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import { PostCommentService } from '../post-comment.service';
+import { PostCommentService } from '../services/post-comment.service';
 import { GetPostCommentRdto } from './rdtos/get-post-comments.rdto';
 
 @ApiBearerAuth('JWT')

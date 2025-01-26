@@ -1,8 +1,8 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from '../user/entities/user.entity';
-import { PostComment } from './entities/post-comment.entity';
+import { User } from '../../user/entities/user.entity';
+import { PostComment } from '../entities/post-comment.entity';
 
 @Injectable()
 export class PostCommentService {

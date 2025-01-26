@@ -18,7 +18,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { FirebaseAuthGuard } from '../../../../guards/firebase-auth.guard';
-import { PostService } from '../post.service';
+import { PostService } from '../services/post.service';
 import { UpdatePostDto } from './dtos/update-post.dto';
 import { User } from '../../user/entities/user.entity';
 import { PostStatus } from '../enums/post-status.enum';

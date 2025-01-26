@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from './entities/user.entity';
-import { FirebaseAdmin } from '../../firebase/firebase-admin';
 import { DecodedIdToken } from 'firebase-admin/lib/auth/token-verifier';
-import { UserStatistics } from './entities/user-statistics.entity';
+import { User } from '../entities/user.entity';
+import { UserStatistics } from '../entities/user-statistics.entity';
+import { FirebaseAdmin } from '../../../firebase/firebase-admin';
 
 @Injectable()
 export class AuthService {

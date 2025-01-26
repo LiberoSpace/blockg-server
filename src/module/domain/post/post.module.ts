@@ -3,9 +3,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ExchangeRateModule } from '../exchange-rate/exchange-rate.module';
 import { PostLike } from './entities/post-like.entity';
 import { Post } from './entities/post.entity';
-import { PostLikeService } from './post-like.service';
-import { PostService } from './post.service';
-import { PostCommentService } from './post-comment.service';
+import { PostLikeService } from './services/post-like.service';
+import { PostService } from './services/post.service';
+import { PostCommentService } from './services/post-comment.service';
 import { PostComment } from './entities/post-comment.entity';
 
 @Module({

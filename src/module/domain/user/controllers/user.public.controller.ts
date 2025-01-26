@@ -1,6 +1,6 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { UserService } from './user.service';
+import { UserService } from '../services/user.service';
 
 @Controller('blockg/public-api/v1/users')
 @ApiTags('유저')

@@ -1,7 +1,7 @@
 import { Controller, Delete, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiExcludeController } from '@nestjs/swagger';
 import { CloudSchedulerGuard } from '../../../../guards/cloud-scheduler.guard';
-import { PostService } from '../post.service';
+import { PostService } from '../services/post.service';
 
 @ApiBearerAuth('JWT')
 @UseGuards(CloudSchedulerGuard)

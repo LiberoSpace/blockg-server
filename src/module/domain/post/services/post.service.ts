@@ -6,28 +6,21 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  Brackets,
-  FindManyOptions,
-  ILike,
-  LessThan,
-  Or,
-  Repository,
-} from 'typeorm';
+import { Brackets, LessThan, Repository } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
-import { ExchangeRateService } from '../exchange-rate/exchange-rate.service';
-import { UpdatePostMetadataDto } from './apis/dtos/update-post-metadata.dto';
-import { UpdatePostDto } from './apis/dtos/update-post.dto';
-import { Block } from './entities/block.entity';
-import { Post } from './entities/post.entity';
-import { BlockType } from './enums/block-type.enum';
-import { PostStatus } from './enums/post-status.enum';
-import { UpdatePostEvent } from './enums/update-post-event.enum';
-import { User } from '../user/entities/user.entity';
-import { Page } from '../../../utils/page';
-import { GetPostsDto } from './apis/dtos/get-posts.dto';
+import { Page } from '../../../../utils/page';
+import { User } from '../../user/entities/user.entity';
+import { GetPostsDto } from '../controllers/dtos/get-posts.dto';
+import { UpdatePostMetadataDto } from '../controllers/dtos/update-post-metadata.dto';
+import { UpdatePostDto } from '../controllers/dtos/update-post.dto';
+import { Block } from '../entities/block.entity';
+import { Post } from '../entities/post.entity';
+import { BlockType } from '../enums/block-type.enum';
+import { PostStatus } from '../enums/post-status.enum';
+import { UpdatePostEvent } from '../enums/update-post-event.enum';
 import { PostCommentService } from './post-comment.service';
 import { PostLikeService } from './post-like.service';
+import { ExchangeRateService } from '../../exchange-rate/services/exchange-rate.service';
 
 @Injectable()
 export class PostService {

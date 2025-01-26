@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { ExchangeRateService } from './exchange-rate.service';
-import { ExchangeRateController } from './exchange-rate.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ExchangeRate } from './exchange-rate.entity';
+import { ExchangeRate } from './entities/exchange-rate.entity';
 import { GcpModule } from '../../../module/gcp/gcp.module';
+import { ExchangeRateController } from './controllers/exchange-rate.controller';
+import { ExchangeRateService } from './services/exchange-rate.service';
 
 @Module({
   imports: [GcpModule, TypeOrmModule.forFeature([ExchangeRate])],

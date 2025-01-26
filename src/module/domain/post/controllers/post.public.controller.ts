@@ -8,7 +8,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { PostService } from '../post.service';
+import { PostService } from '../services/post.service';
 import { GetPostsDto } from './dtos/get-posts.dto';
 import { UpdatePostMetadataDto } from './dtos/update-post-metadata.dto';
 import { GetPostRdto } from './rdtos/get-post.rdto';
