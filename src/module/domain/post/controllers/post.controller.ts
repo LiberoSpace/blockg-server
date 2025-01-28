@@ -3,8 +3,6 @@ import {
   Body,
   Controller,
   Delete,
-  Get,
-  NotFoundException,
   Param,
   Patch,
   Post,
@@ -18,11 +16,10 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { FirebaseAuthGuard } from '../../../../guards/firebase-auth.guard';
-import { PostService } from '../services/post.service';
-import { UpdatePostDto } from './dtos/update-post.dto';
 import { User } from '../../user/entities/user.entity';
 import { PostStatus } from '../enums/post-status.enum';
-import { GetPostRdto } from './rdtos/get-post.rdto';
+import { PostService } from '../services/post.service';
+import { UpdatePostDto } from './dtos/update-post.dto';
 
 @ApiBearerAuth('JWT')
 @UseGuards(FirebaseAuthGuard)
@@ -32,45 +29,23 @@ export class PostController {
   constructor(private readonly postService: PostService) {}
 
   @ApiOperation({
-    summary: '글 상세 조회',
-  })
-  @ApiOkResponse({
-    type: GetPostRdto,
-  })
-  @Get('/:referenceId')
-  async getPost(
-    @Request() req: any,
-    @Param('referenceId')
-    referenceId: string,
-  ): Promise<GetPostRdto> {
-    const user: User = req.user;
-    const post = await this.postService.findOne(referenceId, user);
-    if (!post) {
-      throw new NotFoundException('글이 없습니다.');
-    }
-    if (user.id !== post.userId) {
-    }
-    return GetPostRdto.fromEntity({ post, isMine: true });
-  }
-
-  @ApiOperation({
     summary: '글 생성하기.',
     description: 'postId 이용을 위해 사용됨',
   })
   @ApiOkResponse({
-    description: 'id, referenceId로 구성된 객체',
+    description: 'id, 해당 유저의 postNumber로 구성된 객체',
     type: Object,
   })
   @Post('/')
   async createPost(@Request() req: any): Promise<{
     id: number;
-    referenceId: string;
+    postNumber: number;
   }> {
     const user = req.user;
     const post = await this.postService.createPost(user.id);
     return {
       id: post.id,
-      referenceId: post.referenceId,
+      postNumber: post.postNumber,
     };
   }
 

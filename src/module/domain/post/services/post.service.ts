@@ -23,6 +23,7 @@ import { UpdatePostEvent } from '../enums/update-post-event.enum';
 import { PostCommentService } from './post-comment.service';
 import { PostLikeService } from './post-like.service';
 import { PostTagTypeCount } from '../interfaces/post-tag-type-count.interface';
+import { FirebaseAdmin } from '../../../firebase/firebase-admin';
 
 @Injectable()
 export class PostService {
@@ -35,9 +36,10 @@ export class PostService {
     private exchangeRateService: ExchangeRateService,
     private postLikeService: PostLikeService,
     private postCommentService: PostCommentService,
+    private firebaseAdmin: FirebaseAdmin,
   ) {}
 
-  async findPage(dto: GetPostsDto): Promise<Page<Post>> {
+  async findPage(dto: GetPostsDto, handle?: string): Promise<Page<Post>> {
     const dbQuery = this.postRepository
       .createQueryBuilder('post')
       .leftJoinAndSelect('post.user', 'user')
@@ -45,6 +47,10 @@ export class PostService {
       .orderBy('"publishedAt"', 'DESC')
       .limit(dto.limit)
       .offset(dto.page * dto.limit);
+
+    if (handle) {
+      dbQuery.andWhere('user.handle = :handle', { handle: handle });
+    }
 
     if (dto.curationNumber) {
       dbQuery.andWhere('"curationNumber" = :curationNumber', {
@@ -68,9 +74,9 @@ export class PostService {
     return new Page(totalCount, posts, dto.limit, dto.page);
   }
 
-  async findOne(referenceId: string, requestUser?: User): Promise<Post | null> {
+  async findOne(handle: string, postNumber: number): Promise<Post | null> {
     const post = await this.postRepository.findOne({
-      where: { referenceId: referenceId },
+      where: { user: { handle: handle }, postNumber: postNumber },
       relations: { user: true, postTags: true },
     });
 
@@ -83,8 +89,15 @@ export class PostService {
   }
 
   async createPost(userId: number): Promise<Post> {
+    const lastPost = await this.postRepository.findOne({
+      where: { userId },
+      order: { postNumber: 'DESC' },
+    });
+    let postNumber = lastPost ? lastPost.postNumber + 1 : 1;
+
     const insertResult = await this.postRepository.insert({
       userId,
+      postNumber,
     });
     const insertedPost = await this.postRepository.findOneBy({
       id: Number(insertResult.identifiers[0].id),
@@ -207,33 +220,35 @@ export class PostService {
     });
   }
 
-  async updatePostMetadata(referenceId: string, dto: UpdatePostMetadataDto) {
+  async updatePostMetadata(postId: number, dto: UpdatePostMetadataDto) {
     switch (dto.event) {
       case UpdatePostEvent.VIEW:
-        await this.postRepository.increment(
-          { referenceId: referenceId },
-          'views',
-          1,
-        );
+        await this.postRepository.increment({ id: postId }, 'views', 1);
         break;
       case UpdatePostEvent.SHARE:
-        await this.postRepository.increment(
-          { referenceId: referenceId },
-          'shareCount',
-          1,
-        );
+        await this.postRepository.increment({ id: postId }, 'shareCount', 1);
         break;
       default:
     }
   }
 
   async deletePost(postId: number, userId: number): Promise<void> {
-    const post = await this.postRepository.findOneBy({
-      id: postId,
+    const post = await this.postRepository.findOne({
+      where: {
+        id: postId,
+      },
+      relations: { user: true },
     });
     if (!post) throw new NotFoundException('삭제하려는 글이 없습니다.');
+
     if (post.userId != userId)
       throw new ForbiddenException('글에 대한 소유권이 없습니다.');
+
+    // storage 내부에 데이터 삭제
+    await this.firebaseAdmin.deleteStoragePostData(
+      post.user.uid,
+      post.postNumber,
+    );
 
     await this.postRepository.delete({ id: postId });
   }

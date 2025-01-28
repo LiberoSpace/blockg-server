@@ -4,7 +4,6 @@ import {
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
-  Unique,
 } from 'typeorm';
 import { PostTagType } from '../enums/post-tag-type.enum';
 import { Post } from './post.entity';
@@ -24,6 +23,7 @@ export class PostTag {
 
   @ManyToOne(() => Post, (post) => post.postTags, { onDelete: 'CASCADE' })
   post: Post;
+
   @Column()
   postId: number;
 }

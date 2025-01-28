@@ -1,20 +1,20 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { plainToInstance } from 'class-transformer';
 import {
   IsArray,
   IsDate,
   IsEnum,
   IsInt,
+  IsNumber,
   IsString,
   ValidateNested,
 } from 'class-validator';
-import { BlockDto } from '../dtos/blocks-dto';
-import { Post } from '../../entities/post.entity';
-import { PostStatus } from '../../enums/post-status.enum';
 import { Block } from '../../entities/block.entity';
-import { plainToInstance } from 'class-transformer';
+import { Post } from '../../entities/post.entity';
 import { BlockType } from '../../enums/block-type.enum';
-import { PostTag } from '../../entities/post-tag.entity';
+import { PostStatus } from '../../enums/post-status.enum';
 import { PostTagType } from '../../enums/post-tag-type.enum';
+import { BlockDto } from '../dtos/blocks-dto';
 
 export class GetPostRdto {
   @ApiProperty({})
@@ -28,10 +28,10 @@ export class GetPostRdto {
   title: string;
 
   @ApiProperty({
-    description: '식별자',
+    description: '유저 글 번호',
   })
-  @IsString()
-  referenceId: string;
+  @IsNumber()
+  postNumber: number;
 
   @ApiProperty({
     description: '이미지 썸네일 Url',
@@ -134,7 +134,7 @@ export class GetPostRdto {
   })
   @IsEnum(PostTagType, { each: true })
   @IsArray()
-  postTagType: PostTagType[];
+  postTagTypes: PostTagType[];
 
   static fromEntity({
     post,
@@ -146,7 +146,6 @@ export class GetPostRdto {
     const rdto = new GetPostRdto();
     rdto.id = post.id;
     rdto.title = post.title;
-    rdto.referenceId = post.referenceId;
     rdto.thumbnailUrl = post.thumbnailUrl;
     rdto.thumbnailText = post.thumbnailText;
 
@@ -170,7 +169,7 @@ export class GetPostRdto {
     rdto.blocks = plainToInstance(Block, post.content);
 
     if (post.postTags) {
-      rdto.postTagType = post.postTags.map((postTag) => postTag.tagType);
+      rdto.postTagTypes = post.postTags.map((postTag) => postTag.tagType);
     }
 
     return rdto;

@@ -1,28 +1,24 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { env } from 'process';
 import { AppController } from './app.controller';
+import { ExchangeRate } from './module/domain/exchange-rate/entities/exchange-rate.entity';
+import { ExchangeRateHttpModule } from './module/domain/exchange-rate/exchange-rate-http.module';
+import { PostComment } from './module/domain/post/entities/post-comment.entity';
+import { PostLike } from './module/domain/post/entities/post-like.entity';
+import { PostTag } from './module/domain/post/entities/post-tag.entity';
 import { Post } from './module/domain/post/entities/post.entity';
 import { PostHttpModule } from './module/domain/post/post-http.module';
+import { AuthHttpModule } from './module/domain/user/auth-http.module';
+import { UserStatistics } from './module/domain/user/entities/user-statistics.entity';
 import { User } from './module/domain/user/entities/user.entity';
 import { UserHttpModule } from './module/domain/user/user-http.module';
-import { FirebaseAdminModule } from './module/firebase/firebase-admin.module';
 import { StartupService } from './startup.service';
-import { AuthModule } from './module/domain/user/auth.module';
-import { ExchangeRateHttpModule } from './module/domain/exchange-rate/exchange-rate-http.module';
-import { ConfigModule } from '@nestjs/config';
-import { ExchangeRate } from './module/domain/exchange-rate/entities/exchange-rate.entity';
-import { AuthHttpModule } from './module/domain/user/auth-http.module';
-import { PostLike } from './module/domain/post/entities/post-like.entity';
-import { UserStatistics } from './module/domain/user/entities/user-statistics.entity';
-import { PostComment } from './module/domain/post/entities/post-comment.entity';
-import { PostTag } from './module/domain/post/entities/post-tag.entity';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    FirebaseAdminModule,
-    AuthModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: env.DB_HOST,

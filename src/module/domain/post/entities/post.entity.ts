@@ -7,6 +7,7 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  Unique,
   UpdateDateColumn,
 } from 'typeorm';
 import { User } from '../../user/entities/user.entity';
@@ -16,14 +17,14 @@ import { PostLike } from './post-like.entity';
 import { PostComment } from './post-comment.entity';
 import { PostTag } from './post-tag.entity';
 
-@Index('reference_id_index', ['referenceId'])
+@Unique('user_id_post_number_uk', ['userId', 'postNumber'])
 @Entity()
 export class Post {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'uuid', default: 'uuid_generate_v4()' })
-  referenceId: string; // 기본적으로 UUID 생성
+  @Column()
+  postNumber: number;
 
   @Column({ nullable: true })
   title: string;

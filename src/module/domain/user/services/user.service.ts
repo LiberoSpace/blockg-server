@@ -6,17 +6,19 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from '../entities/user.entity';
+import { Post } from '../../post/entities/post.entity';
 import { CreateUserDto } from '../controllers/dtos/create-user.dto';
-import { uniqueHandleGenerator } from '../utils/unique-handle-generator';
+import { User } from '../entities/user.entity';
 import { nickNameGenerator } from '../utils/nick-name-generator';
-import { AuthService } from './auth.service';
+import { uniqueHandleGenerator } from '../utils/unique-handle-generator';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    @InjectRepository(Post)
+    private postRepository: Repository<Post>,
   ) {}
 
   async getUser({

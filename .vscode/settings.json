@@ -6,6 +6,7 @@
     "cloudsdktool",
     "cloudsql",
     "dtos",
+    "firebasestorage",
     "gcloud",
     "nestjs",
     "ossp",

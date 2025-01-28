@@ -45,7 +45,7 @@ export class GetUserRdto {
   })
   @Type(() => GetPostTagTypeCountRdto)
   @IsArray()
-  postTagTypeCount: GetPostTagTypeCountRdto[];
+  postTagTypeCounts: GetPostTagTypeCountRdto[];
 
   static fromUser(
     user: User,
@@ -58,7 +58,7 @@ export class GetUserRdto {
     rdto.handle = user.handle;
     rdto.createdAt = user.createdAt;
     rdto.statistics = plainToInstance(UserStatistics, statistics);
-    rdto.postTagTypeCount = plainToInstance(
+    rdto.postTagTypeCounts = plainToInstance(
       GetPostTagTypeCountRdto,
       postTagTypeCounts,
     );

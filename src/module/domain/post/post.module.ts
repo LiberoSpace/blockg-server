@@ -8,9 +8,11 @@ import { PostService } from './services/post.service';
 import { PostCommentService } from './services/post-comment.service';
 import { PostComment } from './entities/post-comment.entity';
 import { PostTag } from './entities/post-tag.entity';
+import { FirebaseAdminModule } from '../../firebase/firebase-admin.module';
 
 @Module({
   imports: [
+    FirebaseAdminModule,
     ExchangeRateModule,
     TypeOrmModule.forFeature([Post, PostLike, PostComment, PostTag]),
   ],
