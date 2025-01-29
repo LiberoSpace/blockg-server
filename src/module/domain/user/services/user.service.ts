@@ -12,7 +12,7 @@ import { User } from '../entities/user.entity';
 import { nickNameGenerator } from '../utils/nick-name-generator';
 import { uniqueHandleGenerator } from '../utils/unique-handle-generator';
 import { UpdateUserDto } from '../controllers/dtos/update-user.dto';
-import { FirebaseAdmin } from 'src/module/firebase/firebase-admin';
+import { FirebaseAdmin } from '../../../../module/firebase/firebase-admin';
 
 @Injectable()
 export class UserService {
