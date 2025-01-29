@@ -145,6 +145,7 @@ export class GetPostRdto {
   }) {
     const rdto = new GetPostRdto();
     rdto.id = post.id;
+    rdto.postNumber = post.postNumber;
     rdto.title = post.title;
     rdto.thumbnailUrl = post.thumbnailUrl;
     rdto.thumbnailText = post.thumbnailText;

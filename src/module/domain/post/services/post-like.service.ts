@@ -1,8 +1,8 @@
-import { Injectable, MethodNotAllowedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { QueryFailedError, Repository } from 'typeorm';
-import { PostLike } from '../entities/post-like.entity';
+import { Repository } from 'typeorm';
 import { User } from '../../user/entities/user.entity';
+import { PostLike } from '../entities/post-like.entity';
 
 @Injectable()
 export class PostLikeService {
