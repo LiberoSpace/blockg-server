@@ -14,7 +14,8 @@ import { Post } from '../../entities/post.entity';
 import { BlockType } from '../../enums/block-type.enum';
 import { PostStatus } from '../../enums/post-status.enum';
 import { PostTagType } from '../../enums/post-tag-type.enum';
-import { BlockDto } from '../dtos/blocks-dto';
+import { BlockDto } from '../dtos/block.dto';
+import { BlockRdto } from './block.rdto';
 
 export class GetPostRdto {
   @ApiProperty({})
@@ -167,7 +168,23 @@ export class GetPostRdto {
         (block) => block.type !== BlockType.SECRET,
       );
     }
-    rdto.blocks = plainToInstance(Block, post.content);
+    const blockRdtos = plainToInstance(BlockRdto, post.content);
+    rdto.blocks = blockRdtos.map((blockRdto, index) => {
+      if (blockRdto.type === BlockType.PLACE) {
+        const mapData = post.content[index].googleMapsData;
+        blockRdto.country = mapData.address_components.find((component) =>
+          component.types.find((type) => type === 'country'),
+        );
+        blockRdto.city = mapData.address_components.find((component) =>
+          component.types.find(
+            (type) => type === 'administrative_area_level_1',
+          ),
+        );
+        blockRdto.placeThumbnails = mapData.photos.slice(0, 2);
+        return blockRdto;
+      }
+      return blockRdto;
+    });
 
     if (post.postTags) {
       rdto.postTagTypes = post.postTags.map((postTag) => postTag.tagType);

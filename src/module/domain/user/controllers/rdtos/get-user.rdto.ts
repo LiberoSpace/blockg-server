@@ -3,7 +3,7 @@ import { IsArray, IsDate, IsString } from 'class-validator';
 import { User } from '../../entities/user.entity';
 import { UserStatistics } from '../../entities/user-statistics.entity';
 import { plainToInstance, Type } from 'class-transformer';
-import { PostTagTypeCount } from '../../../post/interfaces/post-tag-type-count.interface';
+import { PostTagTypeCount } from '../../../post/classes/post-tag-type-count';
 import { GetPostTagTypeCountRdto } from '../../../post/controllers/rdtos/get-post-tag-type-count.rdto';
 
 export class GetUserRdto {

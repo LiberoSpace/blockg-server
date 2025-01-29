@@ -1,6 +1,8 @@
 import { BadRequestException } from '@nestjs/common';
-import { BlockDto } from '../controllers/dtos/blocks-dto';
+import { BlockDto } from '../controllers/dtos/block.dto';
 import { BlockType } from '../enums/block-type.enum';
+import { GoogleMapsData } from '../classes/google-maps-data';
+import { Exclude } from 'class-transformer';
 
 export class Block {
   type: BlockType;
@@ -10,10 +12,15 @@ export class Block {
   mainText?: string;
   subText?: string;
   url?: string;
+  link?: string;
   currencyCode?: string;
   isThumbnail?: boolean;
   memo?: string;
   expense?: number;
+
+  @Exclude()
+  googleMapsData: GoogleMapsData;
+
   blocks?: Block[];
 
   static fromBlockDto(dto: BlockDto): Block {
@@ -60,13 +67,17 @@ export class Block {
         if (!dto.subText) {
           throw new BadRequestException('subText이 없습니다.');
         }
-        if (!dto.url) {
-          throw new BadRequestException('url이 없습니다.');
+        if (!dto.link) {
+          throw new BadRequestException('link가 없습니다.');
+        }
+        if (!dto.googleMapsData) {
+          throw new BadRequestException('googleMapsData이 없습니다.');
         }
         block.mainText = dto.mainText;
         block.subText = dto.subText;
         block.placeId = dto.placeId;
-        block.url = dto.url;
+        block.link = dto.link;
+        block.googleMapsData = dto.googleMapsData;
         break;
 
       case BlockType.EXPENSE:

@@ -10,6 +10,7 @@ import {
 } from 'class-validator';
 import { BlockType } from '../../enums/block-type.enum';
 import { Type } from 'class-transformer';
+import { GoogleMapsData } from '../../classes/google-maps-data';
 
 export class BlockDto {
   @ApiProperty({
@@ -62,6 +63,13 @@ export class BlockDto {
   url?: string;
 
   @ApiPropertyOptional({
+    description: '외부로 연결되는 링크. 사용: [place]',
+  })
+  @IsString()
+  @IsOptional()
+  link?: string;
+
+  @ApiPropertyOptional({
     description: '화폐코드. 사용: [expense]',
   })
   @IsString()
@@ -88,6 +96,15 @@ export class BlockDto {
   @IsNumber()
   @IsOptional()
   expense?: number;
+
+  @ApiPropertyOptional({
+    description: '구글 맵 정보. 사용: [place]',
+    type: GoogleMapsData,
+  })
+  @Type(() => GoogleMapsData)
+  @ValidateNested()
+  @IsOptional()
+  googleMapsData?: GoogleMapsData;
 
   @ApiPropertyOptional({
     description: '하위 블록. 현재는 날짜만 지원',

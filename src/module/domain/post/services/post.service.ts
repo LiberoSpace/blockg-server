@@ -22,7 +22,7 @@ import { PostStatus } from '../enums/post-status.enum';
 import { UpdatePostEvent } from '../enums/update-post-event.enum';
 import { PostCommentService } from './post-comment.service';
 import { PostLikeService } from './post-like.service';
-import { PostTagTypeCount } from '../interfaces/post-tag-type-count.interface';
+import { PostTagTypeCount } from '../classes/post-tag-type-count';
 import { FirebaseAdmin } from '../../../firebase/firebase-admin';
 
 @Injectable()

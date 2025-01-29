@@ -2,7 +2,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsArray, IsEnum, IsString, ValidateNested } from 'class-validator';
 import { PostStatus } from '../../enums/post-status.enum';
-import { BlockDto } from './blocks-dto';
+import { BlockDto } from './block.dto';
 import { PostTagType } from '../../enums/post-tag-type.enum';
 
 export class UpdatePostDto {
