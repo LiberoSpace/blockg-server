@@ -300,7 +300,8 @@ export class PostService {
       .select('"tagType"')
       .addSelect('COUNT("tagType")::integer')
       .leftJoin('postTag.post', 'post')
-      .where('post.userId = :userId', { userId: userId })
+      .where('post.status = :status', { status: PostStatus.PUBLISHED })
+      .andWhere('post.userId = :userId', { userId: userId })
       .groupBy('"tagType"')
       .orderBy('count', 'DESC')
       .getRawMany<PostTagTypeCount>();
@@ -317,17 +318,20 @@ export class PostService {
       postStatistics = await this.postRepository.query(
         `SELECT country, COUNT(*)::integer
         FROM post, unnest(countries) AS country
-        WHERE "userId" = $1
+        WHERE status = $1
+        AND "userId" = $2
         GROUP BY country
         ORDER BY count DESC;`,
-        [userId],
+        [PostStatus.PUBLISHED, userId],
       );
     } else {
       postStatistics = await this.postRepository.query(
         `SELECT country, COUNT(*)::integer
         FROM post, unnest(countries) AS country
+        WHERE status = $1
         GROUP BY country
         ORDER BY count DESC;`,
+        [PostStatus.PUBLISHED],
       );
     }
 
