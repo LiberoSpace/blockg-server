@@ -14,9 +14,6 @@ export class PostTagTypeCount {
   @ApiProperty({
     description: '글 태그 타입의 개수',
   })
-  @Transform(({ value }) => {
-    return Number(value);
-  })
   @IsNumber()
   count: number;
 }

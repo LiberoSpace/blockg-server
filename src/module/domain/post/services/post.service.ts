@@ -24,6 +24,8 @@ import { PostCommentService } from './post-comment.service';
 import { PostLikeService } from './post-like.service';
 import { PostTagTypeCount } from '../classes/post-tag-type-count';
 import { FirebaseAdmin } from '../../../firebase/firebase-admin';
+import { PostCountryCount } from '../classes/post-country-count';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class PostService {
@@ -300,11 +302,35 @@ export class PostService {
       .leftJoin('postTag.post', 'post')
       .where('post.userId = :userId', { userId: userId })
       .groupBy('"tagType"')
+      .orderBy('count', 'DESC')
       .getRawMany<PostTagTypeCount>();
 
     // 많은 순 정렬
-    tagTypes.sort((a, b) => b.count - a.count);
+    // tagTypes.sort((a, b) => b.count - a.count);
 
     return tagTypes;
+  }
+
+  async getPostStatistics(userId?: number): Promise<PostCountryCount[]> {
+    let postStatistics: PostCountryCount[];
+    if (userId) {
+      postStatistics = await this.postRepository.query(
+        `SELECT country, COUNT(*)::integer
+        FROM post, unnest(countries) AS country
+        WHERE "userId" = $1
+        GROUP BY country
+        ORDER BY count DESC;`,
+        [userId],
+      );
+    } else {
+      postStatistics = await this.postRepository.query(
+        `SELECT country, COUNT(*)::integer
+        FROM post, unnest(countries) AS country
+        GROUP BY country
+        ORDER BY count DESC;`,
+      );
+    }
+
+    return postStatistics;
   }
 }

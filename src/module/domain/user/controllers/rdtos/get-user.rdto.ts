@@ -4,6 +4,7 @@ import { User } from '../../entities/user.entity';
 import { UserStatistics } from '../../entities/user-statistics.entity';
 import { plainToInstance, Type } from 'class-transformer';
 import { PostTagTypeCount } from '../../../post/classes/post-tag-type-count';
+import { PostCountryCount } from 'src/module/domain/post/classes/post-country-count';
 
 export class GetUserRdto {
   @ApiProperty({
@@ -46,10 +47,20 @@ export class GetUserRdto {
   @IsArray()
   postTagTypeCounts: PostTagTypeCount[];
 
+  @ApiProperty({
+    description: '글 국가 통계',
+    type: PostCountryCount,
+    isArray: true,
+  })
+  @Type(() => PostCountryCount)
+  @IsArray()
+  postCountryCounts: PostCountryCount[];
+
   static fromUser(
     user: User,
     statistics: UserStatistics,
     postTagTypeCounts: PostTagTypeCount[],
+    postCountryCounts: PostCountryCount[],
   ): GetUserRdto {
     const rdto = new GetUserRdto();
     rdto.profileImageUrl = user.profileImageUrl;
@@ -58,6 +69,7 @@ export class GetUserRdto {
     rdto.createdAt = user.createdAt;
     rdto.statistics = plainToInstance(UserStatistics, statistics);
     rdto.postTagTypeCounts = postTagTypeCounts;
+    rdto.postCountryCounts = postCountryCounts;
     return rdto;
   }
 }

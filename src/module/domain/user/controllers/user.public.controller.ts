@@ -27,6 +27,12 @@ export class UserPublicController {
     const postTagTypeCounts = await this.postService.getUserPostTagsStatistics(
       user.id,
     );
-    return GetUserRdto.fromUser(user, statistics, postTagTypeCounts);
+    const postStatistics = await this.postService.getPostStatistics(user.id);
+    return GetUserRdto.fromUser(
+      user,
+      statistics,
+      postTagTypeCounts,
+      postStatistics,
+    );
   }
 }
