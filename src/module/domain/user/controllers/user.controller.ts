@@ -1,15 +1,18 @@
 import {
   Body,
   Controller,
+  Delete,
   ForbiddenException,
   Get,
   Param,
+  Patch,
   Post,
   Request,
   UseGuards,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
+  ApiNoContentResponse,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
@@ -17,13 +20,14 @@ import {
 import { FirebaseAuthGuard } from '../../../../guards/firebase-auth.guard';
 import { UserService } from '../services/user.service';
 import { CreateUserDto } from './dtos/create-user.dto';
+import { UpdateUserDto } from './dtos/update-user.dto';
 
 @ApiBearerAuth('JWT')
 @UseGuards(FirebaseAuthGuard)
 @ApiTags('유저')
 @Controller('blockg/api/v1/users')
 export class UserController {
-  constructor(private UserService: UserService) {}
+  constructor(private userService: UserService) {}
 
   @ApiOperation({
     summary: '자기 정보 상세 조회',
@@ -33,7 +37,7 @@ export class UserController {
     if (req.user.handle != handle) {
       throw new ForbiddenException('자신의 정보를 조회하지 않았습니다.');
     }
-    await this.UserService.getUser({ handle });
+    await this.userService.getUser({ handle });
   }
 
   @ApiOperation({
@@ -49,6 +53,31 @@ export class UserController {
     @Body() dto: CreateUserDto,
   ): Promise<number> {
     const user = req.user;
-    return await this.UserService.createUser(user.uid, dto);
+    return await this.userService.createUser(user.uid, dto);
+  }
+
+  @ApiOperation({
+    summary: '자신의 유저 정보 수정',
+  })
+  @ApiNoContentResponse({
+    description: '정보 수정 완료.',
+  })
+  @Patch('/me')
+  async updateUser(@Request() req: any, @Body() dto: UpdateUserDto) {
+    const user = req.user;
+    await this.userService.updateUser(user, dto);
+  }
+
+  @ApiOperation({
+    summary: '탈퇴하기',
+    description: '인증, 스토리지, DB 등. 유저와 관련된 모든 데이터 삭제',
+  })
+  @ApiNoContentResponse({
+    description: '삭제 완료.',
+  })
+  @Delete('/me')
+  async deleteUser(@Request() req: any) {
+    const user = req.user;
+    await this.userService.deleteUser(user);
   }
 }

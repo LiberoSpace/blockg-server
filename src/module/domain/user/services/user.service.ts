@@ -11,14 +11,15 @@ import { CreateUserDto } from '../controllers/dtos/create-user.dto';
 import { User } from '../entities/user.entity';
 import { nickNameGenerator } from '../utils/nick-name-generator';
 import { uniqueHandleGenerator } from '../utils/unique-handle-generator';
+import { UpdateUserDto } from '../controllers/dtos/update-user.dto';
+import { FirebaseAdmin } from 'src/module/firebase/firebase-admin';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
-    @InjectRepository(Post)
-    private postRepository: Repository<Post>,
+    private firebaseAdmin: FirebaseAdmin,
   ) {}
 
   async getUser({
@@ -87,5 +88,21 @@ export class UserService {
       }),
     );
     return Number(insertResult.identifiers[0].id);
+  }
+
+  async updateUser(user: User, dto: UpdateUserDto) {
+    await this.userRepository.update({ id: user.id }, dto);
+  }
+
+  async deleteUser(user: User) {
+    await this.userRepository.manager.transaction(async (manager) => {
+      // 외부 서비스 관련 내용 삭제
+      // 인증
+      await this.firebaseAdmin.auth().deleteUser(user.uid);
+      // 스토리지
+      await this.firebaseAdmin.deleteStorageUserData(user.uid);
+
+      await manager.delete(User, { id: user.id });
+    });
   }
 }
