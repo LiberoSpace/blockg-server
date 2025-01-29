@@ -6,7 +6,6 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Post } from '../../post/entities/post.entity';
 import { CreateUserDto } from '../controllers/dtos/create-user.dto';
 import { User } from '../entities/user.entity';
 import { nickNameGenerator } from '../utils/nick-name-generator';

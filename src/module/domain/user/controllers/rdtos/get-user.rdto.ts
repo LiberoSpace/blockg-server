@@ -4,7 +4,6 @@ import { User } from '../../entities/user.entity';
 import { UserStatistics } from '../../entities/user-statistics.entity';
 import { plainToInstance, Type } from 'class-transformer';
 import { PostTagTypeCount } from '../../../post/classes/post-tag-type-count';
-import { GetPostTagTypeCountRdto } from '../../../post/controllers/rdtos/get-post-tag-type-count.rdto';
 
 export class GetUserRdto {
   @ApiProperty({
@@ -40,12 +39,12 @@ export class GetUserRdto {
 
   @ApiProperty({
     description: '글 태그 타입 통계',
-    type: GetPostTagTypeCountRdto,
+    type: PostTagTypeCount,
     isArray: true,
   })
-  @Type(() => GetPostTagTypeCountRdto)
+  @Type(() => PostTagTypeCount)
   @IsArray()
-  postTagTypeCounts: GetPostTagTypeCountRdto[];
+  postTagTypeCounts: PostTagTypeCount[];
 
   static fromUser(
     user: User,
@@ -58,10 +57,7 @@ export class GetUserRdto {
     rdto.handle = user.handle;
     rdto.createdAt = user.createdAt;
     rdto.statistics = plainToInstance(UserStatistics, statistics);
-    rdto.postTagTypeCounts = plainToInstance(
-      GetPostTagTypeCountRdto,
-      postTagTypeCounts,
-    );
+    rdto.postTagTypeCounts = postTagTypeCounts;
     return rdto;
   }
 }

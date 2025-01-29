@@ -296,11 +296,11 @@ export class PostService {
     const tagTypes = await this.postTagRepository
       .createQueryBuilder('postTag')
       .select('"tagType"')
-      .addSelect('COUNT("tagType")')
+      .addSelect('COUNT("tagType")::integer')
       .leftJoin('postTag.post', 'post')
       .where('post.userId = :userId', { userId: userId })
       .groupBy('"tagType"')
-      .getRawMany();
+      .getRawMany<PostTagTypeCount>();
 
     // 많은 순 정렬
     tagTypes.sort((a, b) => b.count - a.count);
