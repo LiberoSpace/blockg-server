@@ -272,6 +272,10 @@ export class PostService {
       .where('post.userId = :userId', { userId: userId })
       .groupBy('"tagType"')
       .getRawMany();
+
+    // 많은 순 정렬
+    tagTypes.sort((a, b) => b.count - a.count);
+
     return tagTypes;
   }
 }
