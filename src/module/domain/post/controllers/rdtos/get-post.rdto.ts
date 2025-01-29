@@ -170,19 +170,19 @@ export class GetPostRdto {
     }
     const blockRdtos = plainToInstance(BlockRdto, post.content);
     rdto.blocks = blockRdtos.map((blockRdto, index) => {
-      if (blockRdto.type === BlockType.PLACE) {
-        const mapData = post.content[index].googleMapsData;
-        blockRdto.country = mapData.address_components.find((component) =>
-          component.types.find((type) => type === 'country'),
-        );
-        blockRdto.city = mapData.address_components.find((component) =>
-          component.types.find(
-            (type) => type === 'administrative_area_level_1',
-          ),
-        );
-        blockRdto.placeThumbnails = mapData.photos.slice(0, 2);
+      if (blockRdto.type !== BlockType.PLACE) {
         return blockRdto;
       }
+      const mapData = post.content[index].googleMapsData;
+      if (!mapData) return blockRdto;
+
+      blockRdto.country = mapData.address_components.find((component) =>
+        component.types.find((type) => type === 'country'),
+      );
+      blockRdto.city = mapData.address_components.find((component) =>
+        component.types.find((type) => type === 'administrative_area_level_1'),
+      );
+      blockRdto.placeThumbnails = mapData.photos.slice(0, 2);
       return blockRdto;
     });
 
