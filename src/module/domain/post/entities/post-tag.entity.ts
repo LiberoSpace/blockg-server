@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -23,7 +24,4 @@ export class PostTag {
 
   @ManyToOne(() => Post, (post) => post.postTags, { onDelete: 'CASCADE' })
   post: Post;
-
-  @Column()
-  postId: number;
 }

@@ -182,8 +182,37 @@ export class PostService {
         totalExpense += Math.round((block.expense! * rate)!);
       });
       postUpdateInterface.totalExpense = totalExpense;
-    } else {
-      postUpdateInterface.totalExpense = null;
+    }
+
+    // 국가 및 도시 배열 추가
+    const placeBlocks = blocks.filter(
+      (block) => block.type === BlockType.PLACE,
+    );
+    if (placeBlocks.length !== 0) {
+      const countries: string[] = [];
+      const cities: string[] = [];
+      placeBlocks.forEach((block) => {
+        const countryComponent = block.googleMapsData.address_components.find(
+          (component) => component.types.find((type) => type === 'country'),
+        );
+        if (!countryComponent) return;
+
+        countries.push(countryComponent.short_name);
+
+        if (countryComponent.short_name === 'KR') {
+          const cityComponent = block.googleMapsData.address_components.find(
+            (component) =>
+              component.types.find(
+                (type) => type === 'administrative_area_level_1',
+              ),
+          );
+          if (!cityComponent) return;
+
+          cities.push(cityComponent.short_name);
+        }
+      });
+      postUpdateInterface.countries = countries;
+      postUpdateInterface.cities = cities;
     }
 
     // 첫 발행시각 추가

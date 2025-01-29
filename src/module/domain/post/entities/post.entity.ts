@@ -79,6 +79,12 @@ export class Post {
   @Column('smallint', { nullable: true })
   curationNumber?: number;
 
+  @Column('text', { array: true, nullable: true })
+  countries?: string[] | null;
+
+  @Column('text', { array: true, nullable: true })
+  cities?: string[] | null;
+
   @OneToMany(() => PostLike, (postLike) => postLike.post)
   postLikes: PostLike[];
 
