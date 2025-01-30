@@ -5,7 +5,7 @@ import { UserStatistics } from '../../entities/user-statistics.entity';
 import { plainToInstance, Type } from 'class-transformer';
 import { PostTagTypeCount } from '../../../post/classes/post-tag-type-count';
 import { PostCountryCount } from '../../../post/classes/post-country-count';
-import { PostStatus } from 'src/module/domain/post/enums/post-status.enum';
+import { PostStatus } from '../../../../domain/post/enums/post-status.enum';
 
 export class GetUserRdto {
   @ApiProperty({
