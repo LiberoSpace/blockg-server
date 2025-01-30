@@ -1,10 +1,11 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsDate, IsString } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsArray, IsDate, IsOptional, IsString } from 'class-validator';
 import { User } from '../../entities/user.entity';
 import { UserStatistics } from '../../entities/user-statistics.entity';
 import { plainToInstance, Type } from 'class-transformer';
 import { PostTagTypeCount } from '../../../post/classes/post-tag-type-count';
 import { PostCountryCount } from '../../../post/classes/post-country-count';
+import { PostStatus } from 'src/module/domain/post/enums/post-status.enum';
 
 export class GetUserRdto {
   @ApiProperty({
@@ -31,30 +32,40 @@ export class GetUserRdto {
   @IsDate()
   createdAt: Date;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: '유저 관련 통계',
     type: UserStatistics,
   })
   @Type(() => UserStatistics)
-  statistics: UserStatistics;
+  @IsOptional()
+  statistics?: UserStatistics;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: '글 태그 타입 통계',
     type: PostTagTypeCount,
     isArray: true,
   })
   @Type(() => PostTagTypeCount)
   @IsArray()
-  postTagTypeCounts: PostTagTypeCount[];
+  @IsOptional()
+  postTagTypeCounts?: PostTagTypeCount[];
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: '글 국가 통계',
     type: PostCountryCount,
     isArray: true,
   })
   @Type(() => PostCountryCount)
   @IsArray()
-  postCountryCounts: PostCountryCount[];
+  @IsOptional()
+  postCountryCounts?: PostCountryCount[];
+
+  @ApiPropertyOptional({
+    description: '최근 글 발행일. 없을 경우 반환 x',
+  })
+  @IsDate()
+  @IsOptional()
+  recentPublishedAt?: Date;
 
   static fromUser(
     user: User,
@@ -70,6 +81,24 @@ export class GetUserRdto {
     rdto.statistics = plainToInstance(UserStatistics, statistics);
     rdto.postTagTypeCounts = postTagTypeCounts;
     rdto.postCountryCounts = postCountryCounts;
+    return rdto;
+  }
+
+  static fromUserToSearchEngine(user: User): GetUserRdto {
+    const rdto = new GetUserRdto();
+    rdto.profileImageUrl = user.profileImageUrl;
+    rdto.nickName = user.nickName;
+    rdto.handle = user.handle;
+    rdto.createdAt = user.createdAt;
+
+    const publishedPosts = user.posts.filter(
+      (post) => post.status === PostStatus.PUBLISHED,
+    );
+    const sortedPosts = publishedPosts.sort(
+      (a, b) => b.publishedAt.getTime() - a.publishedAt.getTime(),
+    );
+    if (sortedPosts.length > 0)
+      rdto.recentPublishedAt = sortedPosts[0].publishedAt;
     return rdto;
   }
 }

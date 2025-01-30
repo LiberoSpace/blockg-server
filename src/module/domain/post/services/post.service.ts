@@ -25,7 +25,6 @@ import { PostLikeService } from './post-like.service';
 import { PostTagTypeCount } from '../classes/post-tag-type-count';
 import { FirebaseAdmin } from '../../../firebase/firebase-admin';
 import { PostCountryCount } from '../classes/post-country-count';
-import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class PostService {

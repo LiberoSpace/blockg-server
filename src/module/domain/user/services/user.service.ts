@@ -21,6 +21,10 @@ export class UserService {
     private firebaseAdmin: FirebaseAdmin,
   ) {}
 
+  async getUsers() {
+    return await this.userRepository.find({ relations: { posts: true } });
+  }
+
   async getUser({
     userId,
     uid,

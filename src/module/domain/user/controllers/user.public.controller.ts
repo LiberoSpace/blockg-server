@@ -15,6 +15,19 @@ export class UserPublicController {
   ) {}
 
   @ApiOperation({
+    summary: '유저 목록 조회',
+  })
+  @ApiOkResponse({
+    type: GetUserRdto,
+  })
+  @Get('')
+  async getUsers(): Promise<GetUserRdto[]> {
+    const users = await this.userService.getUsers();
+
+    return users.map((user) => GetUserRdto.fromUserToSearchEngine(user));
+  }
+
+  @ApiOperation({
     summary: '유저 상세 조회',
   })
   @ApiOkResponse({
