@@ -71,6 +71,29 @@ export class PostService {
       );
     }
 
+    if (dto.domesticCountryCode) {
+      if (dto.domesticCountryCode.startsWith('!')) {
+        dbQuery.andWhere(':code != ANY(countries)', {
+          code: dto.domesticCountryCode.slice(1),
+        });
+      } else {
+        dbQuery.andWhere(':code = ANY(countries)', {
+          code: dto.domesticCountryCode,
+        });
+      }
+    }
+
+    if (dto.minExpense) {
+      dbQuery.andWhere('"totalExpense" >= :minExpense', {
+        minExpense: dto.minExpense,
+      });
+    }
+    if (dto.maxExpense) {
+      dbQuery.andWhere('"totalExpense" <= :maxExpense', {
+        maxExpense: dto.maxExpense,
+      });
+    }
+
     const [posts, totalCount] = await dbQuery.getManyAndCount();
 
     return new Page(totalCount, posts, dto.limit, dto.page);

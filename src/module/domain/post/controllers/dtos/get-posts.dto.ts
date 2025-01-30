@@ -1,6 +1,9 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { PageDto } from '../../../../../utils/page.dto';
 import {
+  ArrayMaxSize,
+  ArrayMinSize,
+  IsArray,
   IsBoolean,
   IsEnum,
   IsNumber,
@@ -26,10 +29,26 @@ export class GetPostsDto extends PageDto {
   search?: string;
 
   @ApiPropertyOptional({
-    description: '장소 필터. 국내이면 true',
+    description:
+      '나라 필터. 자신의 [국가 코드] -> 국내, ![국가 코드] -> 해외. EX) !KR -> 한국 제외. KR -> 한국만',
   })
-  @Transform(({ value }) => value === 'true')
-  @IsBoolean()
+  @IsString()
   @IsOptional()
-  isDomestic?: boolean;
+  domesticCountryCode?: string;
+
+  @ApiPropertyOptional({
+    description: '최소 비용 필터',
+  })
+  @Transform(({ value }) => Number(value))
+  @IsNumber()
+  @IsOptional()
+  minExpense: number;
+
+  @ApiPropertyOptional({
+    description: '최대 비용 필터',
+  })
+  @Transform(({ value }) => Number(value))
+  @IsNumber()
+  @IsOptional()
+  maxExpense: number;
 }
