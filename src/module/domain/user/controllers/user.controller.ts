@@ -7,6 +7,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Request,
   UseGuards,
 } from '@nestjs/common';
@@ -76,8 +77,11 @@ export class UserController {
     description: '삭제 완료.',
   })
   @Delete('/me')
-  async deleteUser(@Request() req: any) {
+  async deleteUser(
+    @Request() req: any,
+    @Query('token') googleAuthToken: string,
+  ) {
     const user = req.user;
-    await this.userService.deleteUser(user);
+    await this.userService.deleteUser(user, googleAuthToken);
   }
 }

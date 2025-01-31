@@ -97,11 +97,20 @@ export class UserService {
     await this.userRepository.update({ id: user.id }, dto);
   }
 
-  async deleteUser(user: User) {
+  async deleteUser(user: User, googleAuthToken: string) {
     await this.userRepository.manager.transaction(async (manager) => {
       // 외부 서비스 관련 내용 삭제
       // 인증
       await this.firebaseAdmin.auth().deleteUser(user.uid);
+
+      await fetch(
+        `https://oauth2.googleapis.com/revoke?token=${googleAuthToken}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        },
+      );
+
       // 스토리지
       await this.firebaseAdmin.deleteStorageUserData(user.uid);
 
