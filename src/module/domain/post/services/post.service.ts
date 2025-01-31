@@ -45,7 +45,8 @@ export class PostService {
       .createQueryBuilder('post')
       .leftJoinAndSelect('post.user', 'user')
       .where('status = :status', { status: PostStatus.PUBLISHED })
-      .orderBy('"publishedAt"', 'DESC')
+      .orderBy('"publishedAt"::DATE', 'DESC')
+      .addOrderBy('"views"', 'DESC')
       .limit(dto.limit)
       .offset(dto.page * dto.limit);
 

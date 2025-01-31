@@ -42,7 +42,7 @@ export class GetPostsDto extends PageDto {
   @Transform(({ value }) => Number(value))
   @IsNumber()
   @IsOptional()
-  minExpense: number;
+  minExpense?: number;
 
   @ApiPropertyOptional({
     description: '최대 비용 필터',
@@ -50,5 +50,5 @@ export class GetPostsDto extends PageDto {
   @Transform(({ value }) => Number(value))
   @IsNumber()
   @IsOptional()
-  maxExpense: number;
+  maxExpense?: number;
 }
