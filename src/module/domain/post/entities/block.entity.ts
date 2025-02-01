@@ -28,33 +28,24 @@ export class Block {
     block.type = dto.type;
     switch (dto.type) {
       case BlockType.TEXT:
-      case BlockType.SECRET:
-        if (dto.content === undefined || dto.content === null) {
-          throw new BadRequestException('content가 없습니다.');
-        }
-        block.content = dto.content;
+        assignContent();
+        assignThumbnail();
         break;
 
       case BlockType.HEADLINE:
-        if (dto.content === undefined || dto.content === null) {
-          throw new BadRequestException('content가 없습니다.');
-        }
-        block.content = dto.content;
+        assignContent();
+        assignSubType();
+        assignThumbnail();
+        break;
 
-        if (dto.subType === undefined || dto.subType === null) {
-          throw new BadRequestException('헤더 종류가 없습니다.');
-        }
-        block.subType = dto.subType;
+      case BlockType.SECRET:
+        assignContent();
         break;
 
       case BlockType.IMAGE:
-        if (!dto.url) {
-          throw new BadRequestException('url이 없습니다.');
-        }
-        block.url = dto.url;
-        if (dto.isThumbnail) {
-          block.isThumbnail = true;
-        }
+        assignUrl();
+        assignThumbnail();
+
         break;
 
       case BlockType.PLACE:
@@ -125,6 +116,30 @@ export class Block {
         block.blocks = dto.blocks.map((block) => Block.fromBlockDto(block));
         break;
     }
+    function assignSubType() {
+      if (dto.subType === undefined || dto.subType === null) {
+        throw new BadRequestException('subType가 없습니다.');
+      }
+      block.subType = dto.subType;
+    }
+    function assignThumbnail() {
+      if (dto.isThumbnail) {
+        block.isThumbnail = true;
+      }
+    }
+    function assignContent() {
+      if (dto.content === undefined || dto.content === null) {
+        throw new BadRequestException('content가 없습니다.');
+      }
+      block.content = dto.content;
+    }
+    function assignUrl() {
+      if (!dto.url) {
+        throw new BadRequestException('url이 없습니다.');
+      }
+      block.url = dto.url;
+    }
+
     return block;
   }
 }

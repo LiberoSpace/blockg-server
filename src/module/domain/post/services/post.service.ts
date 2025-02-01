@@ -177,11 +177,11 @@ export class PostService {
     };
 
     // 썸네일 지정
-    const thumbnailImageBlock = blocks.find((block) => block.isThumbnail);
-    postUpdateInterface.thumbnailUrl = thumbnailImageBlock?.url ?? null;
-    const thumbnailTextBlock = blocks.find(
-      (block) => block.type === BlockType.TEXT,
+    const thumbnailImageBlock = blocks.find(
+      (block) => block.isThumbnail && block.type === BlockType.IMAGE,
     );
+    postUpdateInterface.thumbnailUrl = thumbnailImageBlock?.url ?? null;
+    const thumbnailTextBlock = blocks.find((block) => block.isThumbnail);
     postUpdateInterface.thumbnailText = thumbnailTextBlock?.content ?? null;
 
     // 총 비용 계산

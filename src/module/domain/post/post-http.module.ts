@@ -9,6 +9,7 @@ import { PostSchedulerController } from './controllers/post.scheduler.controller
 import { GcpModule } from '../../gcp/gcp.module';
 import { PostCommentController } from './controllers/post-comment.controller';
 import { PostCommentPublicController } from './controllers/post-comment.public.controller';
+import { PostInternalController } from './controllers/post.internal.controller';
 
 @Module({
   imports: [AuthModule, PostModule, GcpModule],
@@ -20,6 +21,7 @@ import { PostCommentPublicController } from './controllers/post-comment.public.c
     PostSchedulerController,
     PostCommentController,
     PostCommentPublicController,
+    PostInternalController,
   ],
 })
 export class PostHttpModule {}
