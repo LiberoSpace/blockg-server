@@ -1,16 +1,10 @@
 import { Controller, Get, Query, UseGuards } from '@nestjs/common';
-import {
-  ApiBearerAuth,
-  ApiOkResponse,
-  ApiOperation,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { InternalGuard } from '../../../../guards/internal.guard';
 import { PostService } from '../services/post.service';
 import { GetPostsDto } from './dtos/get-posts.dto';
 import { GetPostsRdto } from './rdtos/get-posts.rdto';
 
-@ApiBearerAuth('JWT')
 @UseGuards(InternalGuard)
 @ApiTags('내부 API')
 @Controller('blockg/internal-api/v1/posts')
