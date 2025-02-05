@@ -168,23 +168,24 @@ export class GetPostRdto {
         (block) => block.type !== BlockType.SECRET,
       );
     }
-    const blockRdtos = plainToInstance(BlockRdto, post.content);
-    rdto.blocks = blockRdtos.map((blockRdto, index) => {
-      if (blockRdto.type !== BlockType.PLACE) {
-        return blockRdto;
-      }
-      const mapData = post.content[index].googleMapsData;
-      if (!mapData) return blockRdto;
+    rdto.blocks = plainToInstance(BlockRdto, post.content);
+    // const blockRdtos = plainToInstance(BlockRdto, post.content);
+    // rdto.blocks = blockRdtos.map((blockRdto, index) => {
+    //   if (blockRdto.type !== BlockType.PLACE) {
+    //     return blockRdto;
+    //   }
+    //   const mapData = post.content[index].googleMapsData;
+    //   if (!mapData) return blockRdto;
 
-      blockRdto.country = mapData.address_components.find((component) =>
-        component.types.find((type) => type === 'country'),
-      );
-      blockRdto.city = mapData.address_components.find((component) =>
-        component.types.find((type) => type === 'administrative_area_level_1'),
-      );
-      blockRdto.placeThumbnails = mapData.photos.slice(0, 2);
-      return blockRdto;
-    });
+    //   blockRdto.country = mapData.address_components.find((component) =>
+    //     component.types.find((type) => type === 'country'),
+    //   );
+    //   blockRdto.city = mapData.address_components.find((component) =>
+    //     component.types.find((type) => type === 'administrative_area_level_1'),
+    //   );
+    //   blockRdto.placeThumbnails = mapData.photos.slice(0, 2);
+    //   return blockRdto;
+    // });
 
     if (post.postTags) {
       rdto.postTagTypes = post.postTags.map((postTag) => postTag.tagType);

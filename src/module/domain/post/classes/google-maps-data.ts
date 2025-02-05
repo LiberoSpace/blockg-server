@@ -11,11 +11,11 @@ import {
 export class GoogleMapsLatLng {
   @ApiProperty()
   @IsNumber()
-  lat: number;
+  latitude: number;
 
   @ApiProperty()
   @IsNumber()
-  lng: number;
+  longitude: number;
 }
 
 export class GoogleMapsViewport {
@@ -24,17 +24,123 @@ export class GoogleMapsViewport {
   })
   @Type(() => GoogleMapsLatLng)
   @ValidateNested()
-  northeast: GoogleMapsLatLng;
+  high: GoogleMapsLatLng;
 
   @ApiProperty({
     type: () => GoogleMapsLatLng,
   })
   @Type(() => GoogleMapsLatLng)
   @ValidateNested()
-  southwest: GoogleMapsLatLng;
+  low: GoogleMapsLatLng;
 }
 
-export class GoogleMapsGeometry {
+export class GoogleMapsPlusCode {
+  @ApiProperty()
+  @IsString()
+  compoundCode: string;
+
+  @ApiProperty()
+  @IsString()
+  globalCode: string;
+}
+
+export class AuthorAttributions {
+  @ApiProperty()
+  @IsString()
+  displayName: string;
+
+  @ApiProperty()
+  @IsString()
+  uri: string;
+
+  @ApiProperty()
+  @IsString()
+  photoUri: string;
+}
+
+export class GoogleMapsPhoto {
+  @ApiPropertyOptional()
+  @IsString()
+  @IsOptional()
+  name?: string;
+
+  @ApiPropertyOptional()
+  @IsNumber()
+  @IsOptional()
+  heightPx?: number;
+
+  @ApiPropertyOptional()
+  @IsNumber()
+  @IsOptional()
+  widthPx?: number;
+
+  @ApiPropertyOptional()
+  @IsString()
+  @IsOptional()
+  flagContentUri?: string;
+
+  @ApiPropertyOptional()
+  @IsString()
+  @IsOptional()
+  googleMapsUri?: string;
+
+  @ApiPropertyOptional({
+    type: () => AuthorAttributions,
+  })
+  @Type(() => AuthorAttributions)
+  @ValidateNested()
+  @IsOptional()
+  authorAttributions?: AuthorAttributions;
+}
+
+export class GoogleMapsAddressComponent {
+  @ApiProperty()
+  @IsString()
+  longText: string;
+
+  @ApiProperty()
+  @IsString()
+  shortText: string;
+
+  @ApiProperty({ description: '주소 타입', isArray: true })
+  @IsArray()
+  @IsString({ each: true })
+  types: string[];
+
+  @ApiProperty({ description: '언어 타입' })
+  @IsString()
+  languageCode: string;
+}
+
+export class GoogleMapsData {
+  @ApiProperty({
+    type: () => GoogleMapsAddressComponent,
+    isArray: true,
+  })
+  @Type(() => GoogleMapsAddressComponent)
+  @ValidateNested({ each: true })
+  addressComponents: GoogleMapsAddressComponent[];
+
+  @ApiProperty()
+  @IsString()
+  formattedAddress: string;
+
+  @ApiProperty({ description: '장소 타입', isArray: true })
+  @IsArray()
+  @IsString({ each: true })
+  types: string[];
+
+  @ApiProperty({ description: '장소 타입' })
+  @IsString()
+  primaryType: string;
+
+  @ApiProperty({
+    type: () => GoogleMapsPlusCode,
+  })
+  @Type(() => GoogleMapsPlusCode)
+  @ValidateNested()
+  plusCode: GoogleMapsPlusCode;
+
   @ApiProperty({
     type: () => GoogleMapsLatLng,
   })
@@ -48,97 +154,6 @@ export class GoogleMapsGeometry {
   @Type(() => GoogleMapsViewport)
   @ValidateNested()
   viewport: GoogleMapsViewport;
-}
-
-export class GoogleMapsPlusCode {
-  @ApiProperty()
-  @IsString()
-  compound_code: string;
-
-  @ApiProperty()
-  @IsString()
-  global_code: string;
-}
-
-export class GoogleMapsRawReference {
-  @ApiProperty()
-  @IsString()
-  fife_url: string;
-}
-
-export class GoogleMapsPhoto {
-  @ApiProperty()
-  @IsNumber()
-  height: number;
-
-  @ApiProperty()
-  @IsNumber()
-  width: number;
-
-  @ApiPropertyOptional({ description: '기여자 문자열', isArray: true })
-  @IsOptional()
-  @IsArray()
-  @IsString({ each: true })
-  html_attributions?: string[];
-
-  @ApiProperty()
-  @IsString()
-  photo_reference: string;
-
-  @ApiProperty({
-    type: () => GoogleMapsRawReference,
-  })
-  @Type(() => GoogleMapsRawReference)
-  @ValidateNested()
-  raw_reference: GoogleMapsRawReference;
-}
-
-export class GoogleMapsAddressComponent {
-  @ApiProperty()
-  @IsString()
-  long_name: string;
-
-  @ApiProperty()
-  @IsString()
-  short_name: string;
-
-  @ApiProperty({ description: '주소 타입', isArray: true })
-  @IsArray()
-  @IsString({ each: true })
-  types: string[];
-}
-
-export class GoogleMapsData {
-  @ApiProperty({
-    type: () => GoogleMapsAddressComponent,
-    isArray: true,
-  })
-  @Type(() => GoogleMapsAddressComponent)
-  @ValidateNested({ each: true })
-  address_components: GoogleMapsAddressComponent[];
-
-  @ApiProperty()
-  @IsString()
-  formatted_address: string;
-
-  @ApiProperty({ description: '장소 타입', isArray: true })
-  @IsArray()
-  @IsString({ each: true })
-  types: string[];
-
-  @ApiProperty({
-    type: () => GoogleMapsPlusCode,
-  })
-  @Type(() => GoogleMapsPlusCode)
-  @ValidateNested()
-  plus_code: GoogleMapsPlusCode;
-
-  @ApiProperty({
-    type: () => GoogleMapsGeometry,
-  })
-  @Type(() => GoogleMapsGeometry)
-  @ValidateNested()
-  geometry: GoogleMapsGeometry;
 
   @ApiProperty({
     type: () => GoogleMapsPhoto,

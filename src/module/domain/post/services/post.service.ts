@@ -45,7 +45,7 @@ export class PostService {
       .createQueryBuilder('post')
       .leftJoinAndSelect('post.user', 'user')
       .where('status = :status', { status: PostStatus.PUBLISHED })
-      .orderBy('"publishedAt"::DATE', 'DESC')
+      // .orderBy('"publishedAt"::DATE', 'DESC')
       .addOrderBy('"views"', 'DESC')
       .limit(dto.limit)
       .offset(dto.page * dto.limit);
@@ -217,15 +217,15 @@ export class PostService {
       const countries: string[] = [];
       const cities: string[] = [];
       placeBlocks.forEach((block) => {
-        const countryComponent = block.googleMapsData.address_components.find(
+        const countryComponent = block.googleMapsData.addressComponents.find(
           (component) => component.types.find((type) => type === 'country'),
         );
         if (!countryComponent) return;
 
-        countries.push(countryComponent.short_name);
+        countries.push(countryComponent.shortText);
 
-        if (countryComponent.short_name === 'KR') {
-          const cityComponent = block.googleMapsData.address_components.find(
+        if (countryComponent.shortText === 'KR') {
+          const cityComponent = block.googleMapsData.addressComponents.find(
             (component) =>
               component.types.find(
                 (type) => type === 'administrative_area_level_1',
@@ -233,7 +233,7 @@ export class PostService {
           );
           if (!cityComponent) return;
 
-          cities.push(cityComponent.short_name);
+          cities.push(cityComponent.shortText);
         }
       });
       postUpdateInterface.countries = countries;

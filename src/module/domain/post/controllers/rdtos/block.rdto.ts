@@ -101,34 +101,38 @@ export class BlockRdto {
   @IsOptional()
   expense?: number;
 
-  @Exclude()
+  @ApiPropertyOptional({
+    description: '구글 맵 데이터 원본',
+    type: GoogleMapsData,
+  })
+  @IsOptional()
   googleMapsData?: GoogleMapsData;
 
-  @ApiPropertyOptional({
-    description: '장소 썸네일',
-    type: GoogleMapsPhoto,
-    isArray: true,
-  })
-  @IsOptional()
-  placeThumbnails?: GoogleMapsPhoto[];
+  // @ApiPropertyOptional({
+  //   description: '장소 썸네일',
+  //   type: GoogleMapsPhoto,
+  //   isArray: true,
+  // })
+  // @IsOptional()
+  // placeThumbnails?: GoogleMapsPhoto[];
 
-  @ApiPropertyOptional({
-    description: '구글 맵스 데이터, 나라 주소 컴포넌트',
-    type: GoogleMapsAddressComponent,
-  })
-  @IsOptional()
-  @Type(() => GoogleMapsAddressComponent)
-  @ValidateNested()
-  country?: GoogleMapsAddressComponent;
+  // @ApiPropertyOptional({
+  //   description: '구글 맵스 데이터, 나라 주소 컴포넌트',
+  //   type: GoogleMapsAddressComponent,
+  // })
+  // @IsOptional()
+  // @Type(() => GoogleMapsAddressComponent)
+  // @ValidateNested()
+  // country?: GoogleMapsAddressComponent;
 
-  @ApiPropertyOptional({
-    description: '구글 맵스 데이터, 도시 주소 컴포넌트',
-    type: GoogleMapsAddressComponent,
-  })
-  @IsOptional()
-  @Type(() => GoogleMapsAddressComponent)
-  @ValidateNested()
-  city?: GoogleMapsAddressComponent;
+  // @ApiPropertyOptional({
+  //   description: '구글 맵스 데이터, 도시 주소 컴포넌트',
+  //   type: GoogleMapsAddressComponent,
+  // })
+  // @IsOptional()
+  // @Type(() => GoogleMapsAddressComponent)
+  // @ValidateNested()
+  // city?: GoogleMapsAddressComponent;
 
   @ApiPropertyOptional({
     description: '하위 블록. 현재는 날짜만 지원',
