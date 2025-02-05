@@ -155,11 +155,11 @@ export class GoogleMapsData {
   @ValidateNested()
   viewport: GoogleMapsViewport;
 
-  @ApiProperty({
-    type: () => GoogleMapsPhoto,
-    isArray: true,
-  })
-  @Type(() => GoogleMapsPhoto)
-  @ValidateNested({ each: true })
-  photos: GoogleMapsPhoto[];
+  // @ApiProperty({
+  //   type: () => GoogleMapsPhoto,
+  //   isArray: true,
+  // })
+  // @Type(() => GoogleMapsPhoto)
+  // @ValidateNested({ each: true })
+  // photos: GoogleMapsPhoto[];
 }
